@@ -1,0 +1,34 @@
+{
+  "name": "neusta/facilior",
+  "description": "A cli tool to interact easy with multiple databases.",
+  "homepage": "http://neusta-et.de",
+  "license": "MIT",
+  "type": "library",
+  "keywords": ["deployment", "database", "typo3", "facilior"],
+  "require": {
+    "php": ">=5.3",
+    "symfony/console": "~3.0.1",
+    "symfony/yaml": "~3.0.1"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~5.1.7",
+    "satooshi/php-coveralls": "~1.0.1",
+    "php-mock/php-mock": "~1.0.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Neusta\\Facilior\\": "./Neusta/Facilior"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Neusta\\Facilior\\Tests\\": "./tests/Neusta/Facilior"
+    }
+  },
+  "config": {
+    "bin-dir": "bin"
+  },
+  "bin": [
+    "bin/facilior"
+  ]
+}

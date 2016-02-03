@@ -1,0 +1,28 @@
+#!/usr/bin/env php
+<?php
+/**
+ * (c) Noah-Jerome Lotzer <n.lotzer@neusta.de>
+ * neusta eTourism GmbH
+ **/
+
+//Checks Timezone is avaibele
+if (empty(ini_get('date.timezone'))) {
+    date_default_timezone_set('UTC');
+}
+
+//Defines Basedir & Version
+$baseDir = dirname(dirname(__FILE__));
+define('FACILIOR_DIRECTORY', $baseDir);
+define('FACILIOR_VERSION', '0.1');
+
+//Autoload Files
+require_once __DIR__ . '/../vendor/autoload.php';
+
+//Cleanup Argument
+array_shift($argv);
+
+//Run Facilior
+$console = new \Neusta\Facilior\Console();
+$exitCode = $console->execute($argv);
+
+exit($exitCode);
