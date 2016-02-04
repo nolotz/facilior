@@ -11,6 +11,7 @@ namespace Neusta\Facilior\Console;
 
 use Symfony\Component\Console\Formatter\OutputFormatterInterface;
 use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class ConsoleOutputInterface
 {
@@ -30,6 +31,12 @@ class ConsoleOutputInterface
      */
     protected $consoleOutput = null;
 
+    /**
+     * ConsoleOutputInterface constructor.
+     * @param int $verbosity
+     * @param null $decorated
+     * @param OutputFormatterInterface|null $formatter
+     */
     public function __construct($verbosity = ConsoleOutput::VERBOSITY_NORMAL, $decorated = null, OutputFormatterInterface $formatter = null)
     {
         $this->consoleOutput = new ConsoleOutput($verbosity, $decorated, $formatter);

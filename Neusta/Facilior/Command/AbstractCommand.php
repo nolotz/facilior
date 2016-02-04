@@ -30,5 +30,4 @@ abstract class AbstractCommand extends Command
         parent::__construct($name);
     }
 
-
 }

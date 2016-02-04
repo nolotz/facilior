@@ -11,6 +11,7 @@ namespace Neusta\Facilior;
 
 use Neusta\Facilior\Console\ConsoleOutputInterface;
 use Neusta\Facilior\Console\Kernel;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -41,6 +42,7 @@ class Console
     {
         $this->kernel = new Kernel();
         $this->application = new Application('Neusta Facilior', FACILIOR_VERSION);
+        $this->application->setAutoExit(false);
 
         //Creates Console Output
         $this->console = new ConsoleOutputInterface();
@@ -66,7 +68,7 @@ class Console
 
         //Run Command and check if there is a config error
         $argumentsInput = new ArrayInput($arguments);
-        $this->application->run($argumentsInput, $this->console->getConsoleOutput());
+        $exitCode = $this->application->run($argumentsInput, $this->console->getConsoleOutput());
 
         //Bye, Bye
         $this->console->output('Finished <fg=cyan>Facilior</>', 0, 2);

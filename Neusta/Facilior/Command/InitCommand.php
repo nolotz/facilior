@@ -22,16 +22,25 @@ class InitCommand extends AbstractCommand
      */
     protected function execute(InputInterface $input)
     {
-        if(is_dir('.facilior')){
-            $this->consoleOutput->output('<fg=red>Error!!</> Already exists .facilior directory.');
+        $exitCode = 50;
+        $configDir = getcwd() . '/.facilior';
+
+        if(file_exists($configDir)){
+            $this->consoleOutput->output('<fg=red>Error!!</> Already exists .facilior directory.', 1, 2);
             return false;
         }
 
-        if(!file_exists('.facilior')){
-            $this->createFolderStructure();
+        $result = $this->createFolderStructure();
+
+        if($result){
+            $this->consoleOutput->output('<fg=green>Success!!</> The configuration has been generated at <fg=cyan>.facilior</> directory.', 1);
+            $this->consoleOutput->output('<fg=default>Please!!</> Adjust the enviroments to ', 1, 2);
+        } else {
+            $this->consoleOutput->output('<fg=red>Error!!</> Unable to generate the configuration', 1, 2);
+            $exitCode = 0;
         }
 
-
+        return $exitCode;
     }
 
     /**
@@ -47,13 +56,21 @@ class InitCommand extends AbstractCommand
     }
 
     /**
-     * Creates all necessary folders.
+     * @return bool
      */
     protected function createFolderStructure()
     {
-        mkdir('.facilior');
-        mkdir('.facilior/logs');
-        mkdir('.facilior/environments');
-        touch('.facilior/general.yml');
+        $result = [];
+        $result[] = mkdir('.facilior');
+        $result[] = mkdir('.facilior/logs');
+        $result[] = mkdir('.facilior/environments');
+        $result[] = touch('.facilior/general.yml');
+
+        $result[] = touch('.facilior/environments/live.yml');
+        $result[] = touch('.facilior/environments/development.yml');
+        $result[] = touch('.facilior/environments/intern.yml');
+        $result[] = touch('.facilior/environments/staging.yml');
+
+        return !in_array(false, $result);
     }
 }
