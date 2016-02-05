@@ -18,11 +18,9 @@ define('FACILIOR_VERSION', '0.1');
 //Autoload Files
 require_once __DIR__ . '/../vendor/autoload.php';
 
-//Cleanup Argument
-array_shift($argv);
-
 //Run Facilior
 $console = new \Neusta\Facilior\Console();
-$exitCode = $console->execute($argv);
+$exitCode = $console->execute();
 
+//Exit
 exit($exitCode);

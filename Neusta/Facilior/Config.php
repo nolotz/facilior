@@ -45,10 +45,10 @@ class Config
      * @param $key
      * @return mixed
      */
-    public function general($key)
+    public function general($key = null)
     {
         if(empty($key)){
-            throw new \InvalidArgumentException('Invalid key is given.');
+            return $this->generalConfig;
         }
 
         return !empty($this->generalConfig[$key]) ? $this->generalConfig[$key] : '';
@@ -57,30 +57,30 @@ class Config
     /**
      * @param $environment
      * @param $arguments
-     * @return $this|string
+     * @return array|string
      * @throws ConfigNotFoundException
      */
     public function __call($environment, $arguments)
     {
+        if(empty($this->environments[$environment])) {
+            $filePath = getcwd() . '/.facilior/environments/' . $environment . '.yml';
+            if(!file_exists($filePath)){
+                throw new ConfigNotFoundException('Connot find the environment ' . $environment);
+            }
 
-        if(empty($arguments[0])){
-           throw new \InvalidArgumentException('Invalid environment is given.');
+            $this->environments[$environment] = $this->parseConfigFile($filePath);
         }
 
-        $key = $arguments[0];
-
         if(!empty($this->environments[$environment])){
+            if(empty($arguments[0])) {
+                return $this->environments[$environment];
+            }
+
+            $key = strtolower($arguments[0]);
             return !empty($this->environments[$environment][$key]) ? $this->environments[$environment][$key] : '';
         }
 
-        $filePath = getcwd() . '/.facilior/environments/' . $environment . '.yml';
-
-        if(!file_exists($filePath)){
-            throw new ConfigNotFoundException('Connot find the environment $environment');
-        }
-        $this->environments[$environment] = $this->parseConfigFile($filePath);
-
-        return $this;
+        return '';
     }
 
     /**
@@ -88,7 +88,8 @@ class Config
      */
     protected function initGeneralConfig()
     {
-        $this->generalConfig = $this->parseConfigFile(getcwd() . '/.facilior/general.yml');
+        $filePath = getcwd() . '/.facilior/general.yml';
+        $this->generalConfig = file_exists($filePath) ? $this->parseConfigFile($filePath) : [];
     }
 
     /**
@@ -99,7 +100,7 @@ class Config
     protected function parseConfigFile($filePath)
     {
         if(!file_exists($filePath)) {
-            throw new ConfigNotFoundException('Cannot find the file at path $filePath');
+            throw new ConfigNotFoundException('Cannot find the file at path ' . $filePath);
         }
 
         return $this->configParser->parse(file_get_contents($filePath));

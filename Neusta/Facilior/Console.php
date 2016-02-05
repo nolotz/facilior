@@ -62,16 +62,12 @@ class Console
         $exitCode = 0;
 
         //Greetings
-        $this->console->output('Welcome to <fg=cyan>Facilior</>', 0, 2);
         $this->console->log('Logging started');
-        $this->console->output('<fg=default;options=bold>Logging started:</> <fg=magenta>' . $this->console->getLogFile() . '</>', 1, 2);
+        $this->console->output('<fg=default;options=bold>Logging started:</> <fg=magenta>' . $this->console->getLogFile() . '</>', 0, 2);
 
         //Run Command and check if there is a config error
-        $argumentsInput = new ArrayInput($arguments);
-        $exitCode = $this->application->run($argumentsInput, $this->console->getConsoleOutput());
+        $exitCode = $this->application->run();
 
-        //Bye, Bye
-        $this->console->output('Finished <fg=cyan>Facilior</>', 0, 2);
         return $exitCode;
     }
 

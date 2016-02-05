@@ -1,6 +1,7 @@
 <?php
 namespace Neusta\Facilior\Console;
 use Neusta\Facilior\Command\InitCommand;
+use Neusta\Facilior\Command\PullCommand;
 
 /**
  * Created by PhpStorm.
@@ -18,6 +19,7 @@ class Kernel
     public static function commands(){
         return [
             new InitCommand(),
+            new PullCommand()
         ];
     }
 }

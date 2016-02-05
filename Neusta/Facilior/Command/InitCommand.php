@@ -1,5 +1,6 @@
 <?php
 namespace Neusta\Facilior\Command;
+use Neusta\Facilior\Environment;
 use Neusta\Facilior\Init\ProjectAlreadyExistsException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -34,7 +35,7 @@ class InitCommand extends AbstractCommand
 
         if($result){
             $this->consoleOutput->output('<fg=green>Success!!</> The configuration has been generated at <fg=cyan>.facilior</> directory.', 1);
-            $this->consoleOutput->output('<fg=default>Please!!</> Adjust the enviroments to ', 1, 2);
+            $this->consoleOutput->output('<fg=default>Please!!</> Dont forget to configure your enviroments under <fg=magenta>.facilior/enviroments</>.', 1, 2);
         } else {
             $this->consoleOutput->output('<fg=red>Error!!</> Unable to generate the configuration', 1, 2);
             $exitCode = 0;
@@ -64,13 +65,25 @@ class InitCommand extends AbstractCommand
         $result[] = mkdir('.facilior');
         $result[] = mkdir('.facilior/logs');
         $result[] = mkdir('.facilior/environments');
-        $result[] = touch('.facilior/general.yml');
 
-        $result[] = touch('.facilior/environments/live.yml');
-        $result[] = touch('.facilior/environments/development.yml');
-        $result[] = touch('.facilior/environments/intern.yml');
-        $result[] = touch('.facilior/environments/staging.yml');
+        $result[] = $this->createGeneralConfig();
+
+        $result[] = Environment::create('live');
+        $result[] = Environment::create('local');
+        $result[] = Environment::create('development');
+        $result[] = Environment::create('staging');
 
         return !in_array(false, $result);
     }
+
+    /**
+     * creates the general.yml file
+     */
+    protected function createGeneralConfig()
+    {
+        return file_put_contents('.facilior/general.yml',
+        '#general config' . PHP_EOL
+        . 'local_environment: local');
+    }
+
 }
