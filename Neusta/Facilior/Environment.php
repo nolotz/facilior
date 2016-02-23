@@ -1,4 +1,6 @@
 <?php
+namespace Neusta\Facilior;
+
 /**
  * Created by PhpStorm.
  * User: nlotzer
@@ -6,7 +8,6 @@
  * Time: 07:59
  */
 
-namespace Neusta\Facilior;
 
 
 use Neusta\Facilior\Config\ConfigNotFoundException;
@@ -59,8 +60,9 @@ class Environment
         $this->database = $this->getDatabaseSetting($config, 'database');
 
         $this->sshTunnel = $this->getSshSetting($config, 'enabled', false);
-        $this->sshTunnel = $this->getSshSetting($config, 'host', '');
-        $this->sshTunnel = $this->getSshSetting($config, 'username', '');
+        $this->sshHost = $this->getSshSetting($config, 'host', '');
+        $this->sshUsername = $this->getSshSetting($config, 'username', '');
+
     }
 
     /**
@@ -72,7 +74,7 @@ class Environment
     protected function getDatabaseSetting($config, $key, $defaultValue = '')
     {
         $databaseSettingValue = $defaultValue;
-        if (!empty($config['database'][$key])) {
+        if (isset($config['database'][$key])) {
             $databaseSettingValue = $config['database'][$key];
         }
 
@@ -88,7 +90,7 @@ class Environment
     protected function getSshSetting($config, $key, $defaultValue = '')
     {
         $sshSettingValue = $defaultValue;
-        if (!empty($config['ssh_tunnel'][$key])) {
+        if (isset($config['ssh_tunnel'][$key])) {
             $sshSettingValue = $config['ssh_tunnel'][$key];
         }
 
@@ -232,8 +234,12 @@ class Environment
      */
     public static function create($environmentName)
     {
-        $fileHandle = file_put_contents(getcwd() . '/.facilior/environments/' . $environmentName . '.yml',
-            self::defaultEnvironment($environmentName));
+        if (empty($environmentName)) {
+            throw new \Exception('EnvironmentName cant be empty.', 1456222301);
+        }
+
+        $fileHandle = file_put_contents(getcwd() . '/.facilior/environments/' .
+            $environmentName . '.yml', self::defaultEnvironment($environmentName));
         if (!$fileHandle) {
             throw new \Exception('Cant create environment.');
         }
@@ -245,7 +251,7 @@ class Environment
      * @param $environmentName
      * @return string
      */
-    private static function defaultEnvironment($environmentName)
+    protected static function defaultEnvironment($environmentName)
     {
         return '#' . $environmentName . PHP_EOL
         . 'database:' . PHP_EOL

@@ -1,12 +1,12 @@
 <?php
+namespace Neusta\Facilior;
+
 /**
  * Created by PhpStorm.
  * User: nlotzer
  * Date: 03.02.2016
  * Time: 08:06
  */
-
-namespace Neusta\Facilior;
 
 
 use Neusta\Facilior\Config\ConfigNotFoundException;

@@ -10,7 +10,7 @@ namespace Neusta\Facilior\Command;
 
 
 use Neusta\Facilior\Config;
-use Neusta\Facilior\Console\ConsoleOutputInterface;
+use Neusta\Facilior\Console\ConsoleService;
 use Symfony\Component\Console\Command\Command;
 
 abstract class AbstractCommand extends Command
@@ -19,7 +19,7 @@ abstract class AbstractCommand extends Command
     protected $generalConfig = [];
 
     /**
-     * @var ConsoleOutputInterface|null
+     * @var ConsoleService|null
      */
     protected $consoleOutput = null;
 
@@ -29,7 +29,7 @@ abstract class AbstractCommand extends Command
      */
     public function __construct($name = null)
     {
-        $this->consoleOutput = new ConsoleOutputInterface();
+        $this->consoleOutput = new ConsoleService();
         $this->generalConfig = (new Config())->general();
         parent::__construct($name);
     }

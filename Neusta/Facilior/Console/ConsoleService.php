@@ -1,4 +1,6 @@
 <?php
+namespace Neusta\Facilior\Console;
+
 /**
  * Created by PhpStorm.
  * User: nlotzer
@@ -6,18 +8,21 @@
  * Time: 08:50
  */
 
-namespace Neusta\Facilior\Console;
-
 
 use Symfony\Component\Console\Formatter\OutputFormatterInterface;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ConsoleOutputInterface
+class ConsoleService
 {
 
     /**
-     * @var null|string
+     * @var bool
+     */
+    protected $logEnabled = true;
+
+    /**
+     * @var null|resource
      */
     protected $log = null;
 
@@ -32,7 +37,7 @@ class ConsoleOutputInterface
     protected $consoleOutput = null;
 
     /**
-     * ConsoleOutputInterface constructor.
+     * ConsoleService constructor.
      * @param int $verbosity
      * @param null $decorated
      * @param OutputFormatterInterface|null $formatter
@@ -63,18 +68,29 @@ class ConsoleOutputInterface
     }
 
     /**
+     * @return void
+     */
+    protected function setUpLogFile()
+    {
+        $this->logFile = realpath(getcwd() . '/.facilior/logs') . '/log-' . date('Ymd-His') . '.log';
+        $this->log = fopen($this->logFile, 'w');
+    }
+
+    /**
      * Log a message to logfile
      * @param $message
      */
     public function log($message)
     {
-        if ($this->log === null) {
-            $this->logFile = realpath(getcwd() . '/.facilior/logs') . '/log-' . date('Ymd-His') . '.log';
-            $this->log = fopen($this->logFile, 'w');
-        }
+        if ($this->logEnabled) {
+            if ($this->log === null) {
+                $this->setUpLogFile();
+            }
 
-        $message = date('d.m.Y H:i:s -- ') . $message;
-        fwrite($this->log, $message . PHP_EOL);
+
+            $message = date('d.m.Y H:i:s -- ') . $message;
+            fwrite($this->log, $message . PHP_EOL);
+        }
     }
 
     /**

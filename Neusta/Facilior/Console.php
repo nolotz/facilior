@@ -9,7 +9,7 @@
 namespace Neusta\Facilior;
 
 
-use Neusta\Facilior\Console\ConsoleOutputInterface;
+use Neusta\Facilior\Console\ConsoleService;
 use Neusta\Facilior\Console\Kernel;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Console\Application;
@@ -30,7 +30,7 @@ class Console
     protected $application = null;
 
     /**
-     * @var null|ConsoleOutputInterface
+     * @var null|ConsoleService
      */
     protected $console = null;
 
@@ -45,7 +45,7 @@ class Console
         $this->application->setAutoExit(false);
 
         //Creates Console Output
-        $this->console = new ConsoleOutputInterface();
+        $this->console = new ConsoleService();
 
         //Loads Commands into Application
         $this->application->addCommands($this->kernel->commands());
@@ -63,8 +63,8 @@ class Console
 
         //Greetings
         $this->console->log('Logging started');
-        $this->console->output('<fg=default;options=bold>Logging started:</> <fg=magenta>' . $this->console->getLogFile() . '</>',
-            0, 2);
+        $this->console->output('<fg=default;options=bold>Logging started:</> <fg=magenta>' .
+            $this->console->getLogFile() . '</>', 0, 2);
 
         //Run Command and check if there is a config error
         $exitCode = $this->application->run();

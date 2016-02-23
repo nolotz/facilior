@@ -1,4 +1,6 @@
 <?php
+namespace Neusta\Facilior;
+
 /**
  * Created by PhpStorm.
  * User: nlotzer
@@ -6,10 +8,9 @@
  * Time: 09:52
  */
 
-namespace Neusta\Facilior;
 
 
-use Neusta\Facilior\Console\ConsoleOutputInterface;
+use Neusta\Facilior\Console\ConsoleService;
 
 class Database
 {
@@ -25,7 +26,7 @@ class Database
     protected $environment = null;
 
     /**
-     * @var ConsoleOutputInterface|null
+     * @var ConsoleService|null
      */
     protected $consoleOutput = null;
 
@@ -36,7 +37,7 @@ class Database
     public function __construct(Environment $environment)
     {
         $this->environment = $environment;
-        $this->consoleOutput = new ConsoleOutputInterface();
+        $this->consoleOutput = new ConsoleService();
     }
 
     /**
@@ -94,7 +95,7 @@ class Database
     {
         //Uploading SQL Dump to Remote Host
         $dumpName = $this->environment->getDatabase() . '_' . time() . '.sql';
-        $command = "rsync -e 'ssh' " . escapeshellarg($sourceFile) . ' ' .
+        $command = "scp " . escapeshellarg($sourceFile) . ' ' .
             escapeshellarg($this->environment->getSshUsername()) . '@' .
             escapeshellarg($this->environment->getSshHost()) . ':~/' . $dumpName;
 
@@ -161,10 +162,15 @@ class Database
 
     /**
      * @param $pathFile
-     * @return bool
+     * @return mixed|string
+     * @throws \Exception
      */
     public function importSql($pathFile)
     {
+        if (!file_exists($pathFile)) {
+            throw new \Exception('File not exists.', 1456234084);
+        }
+
         if ($this->environment->isSshTunnel()) {
             $status = $this->tunneledDatabaseImport($pathFile);
         } else {

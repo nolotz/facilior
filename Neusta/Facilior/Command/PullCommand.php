@@ -42,24 +42,28 @@ class PullCommand extends AbstractCommand
         $this->consoleOutput->output('Starting pulling <fg=magenta>' . $input->getArgument('from') . '</> database...');
         $sqlDumpPath = $sourceDatabase->exportSql();
 
-        if($sourceDatabase->isLastCommandFailed()){
-            $this->consoleOutput->output('<fg=red>Error!!</> Pulling <fg=magenta>' . $input->getArgument('from') . '</> wasn\'t successfull.');
+        if ($sourceDatabase->isLastCommandFailed()) {
+            $this->consoleOutput->output('<fg=red>Error!!</> Pulling <fg=magenta>' .
+                $input->getArgument('from') . '</> wasn\'t successfull.');
             $this->consoleOutput->output('<fg=default>Please</> check your Logs for more Information.');
             return -1;
         } else {
-            $this->consoleOutput->output('<fg=green>Success!!</> Pulling <fg=magenta>' . $input->getArgument('from') . '</> was successfull.');
+            $this->consoleOutput->output('<fg=green>Success!!</> Pulling <fg=magenta>' .
+                $input->getArgument('from') . '</> was successfull.');
         }
 
 
-        $this->consoleOutput->output('Starting importing <fg=magenta>' . $this->getDestinationEnvironment() . '</> database...');
+        $this->consoleOutput->output('Starting importing <fg=magenta>' .
+            $this->getDestinationEnvironment() . '</> database...');
         $destinationDatabase->importSql($sqlDumpPath);
 
-        if($destinationDatabase->isLastCommandFailed()){
-            $this->consoleOutput->output('<fg=red>Error!!</> Importing <fg=magenta>' .  $this->getDestinationEnvironment() . '</> wasn\'t successfull.');
+        if ($destinationDatabase->isLastCommandFailed()) {
+            $this->consoleOutput->output('<fg=red>Error!!</> Importing <fg=magenta>' .
+                $this->getDestinationEnvironment() . '</> wasn\'t successfull.');
             $this->consoleOutput->output('<fg=default>Please</> check your Logs for more Information.');
             return -1;
         } else {
-            $this->consoleOutput->output('<fg=green>Success!!</> Importing <fg=magenta>' .  $this->getDestinationEnvironment() . '</> was successfull.');
+            $this->consoleOutput->output('<fg=green>Success!!</> Importing <fg=magenta>' . $this->getDestinationEnvironment() . '</> was successfull.');
         }
 
 
@@ -75,10 +79,12 @@ class PullCommand extends AbstractCommand
         $this
             ->setName('pull')
             ->setDescription('Does the magic.')
-
             ->addArgument('from', InputArgument::REQUIRED, 'Which Source Database should be used?')
-            ->addArgument('to', InputArgument::OPTIONAL, 'Destination Database. Default is defined in the general config', null);
-        ;
+            ->addArgument(
+                'to',
+                InputArgument::OPTIONAL,
+                'Destination Database. Default is defined in the general config'
+            );
     }
 
     /**
@@ -87,11 +93,11 @@ class PullCommand extends AbstractCommand
      */
     protected function getDestinationEnvironment()
     {
-        if(!empty($this->inputInterface->getArgument('to'))){
+        if (!empty($this->inputInterface->getArgument('to'))) {
             return $this->inputInterface->getArgument('to');
         }
 
-        if(!empty($this->generalConfig['local_environment'])){
+        if (!empty($this->generalConfig['local_environment'])) {
             return $this->generalConfig['local_environment'];
         }
 
