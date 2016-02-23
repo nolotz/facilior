@@ -1,5 +1,6 @@
 <?php
 namespace Neusta\Facilior\Command;
+
 use Neusta\Facilior\Environment;
 use Neusta\Facilior\Init\ProjectAlreadyExistsException;
 use Symfony\Component\Console\Command\Command;
@@ -26,16 +27,18 @@ class InitCommand extends AbstractCommand
         $exitCode = 50;
         $configDir = getcwd() . '/.facilior';
 
-        if(file_exists($configDir)){
+        if (file_exists($configDir)) {
             $this->consoleOutput->output('<fg=red>Error!!</> Already exists .facilior directory.', 1, 2);
             return false;
         }
 
         $result = $this->createFolderStructure();
 
-        if($result){
-            $this->consoleOutput->output('<fg=green>Success!!</> The configuration has been generated at <fg=cyan>.facilior</> directory.', 1);
-            $this->consoleOutput->output('<fg=default>Please!!</> Dont forget to configure your enviroments under <fg=magenta>.facilior/enviroments</>.', 1, 2);
+        if ($result) {
+            $this->consoleOutput->output('<fg=green>Success!!</> The configuration has been generated at <fg=cyan>.facilior</> directory.',
+                1);
+            $this->consoleOutput->output('<fg=default>Please!!</> Dont forget to configure your enviroments under <fg=magenta>.facilior/enviroments</>.',
+                1, 2);
         } else {
             $this->consoleOutput->output('<fg=red>Error!!</> Unable to generate the configuration', 1, 2);
             $exitCode = 0;
@@ -52,8 +55,7 @@ class InitCommand extends AbstractCommand
     {
         $this
             ->setName('init')
-            ->setDescription('Creates a new Project.')
-        ;
+            ->setDescription('Creates a new Project.');
     }
 
     /**
@@ -81,9 +83,7 @@ class InitCommand extends AbstractCommand
      */
     protected function createGeneralConfig()
     {
-        return file_put_contents('.facilior/general.yml',
-        '#general config' . PHP_EOL
-        . 'local_environment: local');
+        return file_put_contents('.facilior/general.yml', '#general config' . PHP_EOL . 'local_environment: local');
     }
 
 }

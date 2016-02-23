@@ -54,8 +54,12 @@ class Database
      */
     protected function tunneledDatabaseExport($destinationFile)
     {
-        $command = 'ssh -l ' . escapeshellarg($this->environment->getSshUsername()) . ' ' . escapeshellarg($this->environment->getSshHost());
-        $command .= ' "mysqldump --add-drop-table -u ' . escapeshellarg($this->environment->getUsername()) . ' --password=\'' . escapeshellarg($this->environment->getPassword()) . '\'';
+        $command = 'ssh -l ' . escapeshellarg($this->environment->getSshUsername()) . ' ' .
+            escapeshellarg($this->environment->getSshHost());
+        $command .= ' "mysqldump --add-drop-table -u ' .
+            escapeshellarg($this->environment->getUsername()) . ' --password=\'' .
+            escapeshellarg($this->environment->getPassword()) . '\'';
+
         $command .= ' ' . escapeshellarg($this->environment->getDatabase()) . '" > ' . $destinationFile;
 
         exec($command, $output, $returnVar);
@@ -64,26 +68,114 @@ class Database
         return $returnVar;
     }
 
+    /**
+     * @param $destinationFile
+     * @return mixed
+     */
     protected function databaseExport($destinationFile)
     {
+        $command = 'mysqldump --add-drop-table -h ' . escapeshellarg($this->environment->getHost()) . ' -u ' .
+            escapeshellarg($this->environment->getUsername()) . ' --password=\'' .
+            escapeshellarg($this->environment->getPassword()) . '\'';
 
+        $command .= ' ' . escapeshellarg($this->environment->getDatabase()) . ' > ' . $destinationFile;
+
+        exec($command, $output, $returnVar);
+        $this->consoleOutput->log(implode(PHP_EOL, $output));
+
+        return $returnVar;
     }
 
+    /**
+     * @param $sourceFile
+     * @return string
+     */
+    protected function tunneledDatabaseImport($sourceFile)
+    {
+        //Uploading SQL Dump to Remote Host
+        $dumpName = $this->environment->getDatabase() . '_' . time() . '.sql';
+        $command = "rsync -e 'ssh' " . escapeshellarg($sourceFile) . ' ' .
+            escapeshellarg($this->environment->getSshUsername()) . '@' .
+            escapeshellarg($this->environment->getSshHost()) . ':~/' . $dumpName;
+
+        exec($command, $output, $returnVar);
+        $this->consoleOutput->log(implode(PHP_EOL, $output));
+
+        if ($returnVar != 0) {
+            return $returnVar;
+        }
+
+
+        $command = 'ssh -l ' . escapeshellarg($this->environment->getSshUsername()) . ' ' .
+            escapeshellarg($this->environment->getSshHost()) . ' "';
+
+        $command .= 'mysql -h ' . escapeshellarg($this->environment->getHost()) . ' -u ' .
+            escapeshellarg($this->environment->getUsername()) . ' -p' .
+            escapeshellarg($this->environment->getPassword());
+
+        $command .= ' ' . escapeshellarg($this->environment->getDatabase()) . ' < ' .
+            $dumpName . ' && rm ' . $dumpName . '"';
+
+        exec($command, $output, $returnVar);
+        $this->consoleOutput->log(implode(PHP_EOL, $output));
+        return $returnVar;
+    }
+
+    /**
+     * @param $sourceFile
+     * @return mixed
+     */
+    protected function databaseImport($sourceFile)
+    {
+        $command = 'mysql -h ' . escapeshellarg($this->environment->getHost()) . ' -u ' .
+            escapeshellarg($this->environment->getUsername()) . ' -p' .
+            escapeshellarg($this->environment->getPassword());
+        $command .= ' ' . escapeshellarg($this->environment->getDatabase()) .
+            ' < ' . $sourceFile . ' && rm ' . $sourceFile;
+
+        exec($command, $output, $returnVar);
+        $this->consoleOutput->log(implode(PHP_EOL, $output));
+        return $returnVar;
+    }
+
+
+    /**
+     * @return string
+     */
     public function exportSql()
     {
         $pathFile = $this->createTempFile();
-        $status = $this->tunneledDatabaseExport($pathFile);
 
-        if($status != 0){
+        if ($this->environment->isSshTunnel()) {
+            $status = $this->tunneledDatabaseExport($pathFile);
+        } else {
+            $status = $this->databaseExport($pathFile);
+        }
+
+        if ($status != 0) {
             $this->lastCommandFailed = true;
         }
 
         return $pathFile;
     }
 
+    /**
+     * @param $pathFile
+     * @return bool
+     */
     public function importSql($pathFile)
     {
-        
+        if ($this->environment->isSshTunnel()) {
+            $status = $this->tunneledDatabaseImport($pathFile);
+        } else {
+            $status = $this->databaseImport($pathFile);
+        }
+
+        if ($status != 0) {
+            $this->lastCommandFailed = true;
+        }
+
+        return $status;
     }
 
     /**

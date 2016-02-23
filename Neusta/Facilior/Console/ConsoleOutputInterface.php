@@ -37,8 +37,11 @@ class ConsoleOutputInterface
      * @param null $decorated
      * @param OutputFormatterInterface|null $formatter
      */
-    public function __construct($verbosity = ConsoleOutput::VERBOSITY_NORMAL, $decorated = null, OutputFormatterInterface $formatter = null)
-    {
+    public function __construct(
+        $verbosity = ConsoleOutput::VERBOSITY_NORMAL,
+        $decorated = null,
+        OutputFormatterInterface $formatter = null
+    ) {
         $this->consoleOutput = new ConsoleOutput($verbosity, $decorated, $formatter);
     }
 
@@ -65,7 +68,7 @@ class ConsoleOutputInterface
      */
     public function log($message)
     {
-        if($this->log === null){
+        if ($this->log === null) {
             $this->logFile = realpath(getcwd() . '/.facilior/logs') . '/log-' . date('Ymd-His') . '.log';
             $this->log = fopen($this->logFile, 'w');
         }

@@ -50,30 +50,49 @@ class Environment
      */
     protected $sshHost = '';
 
-    /**
-     * @var bool
-     */
-    protected $sshPrivateKey = false;
-
-    /**
-     * @var string
-     */
-    protected $sshPassword = '';
-
 
     public function __construct(array $config)
     {
-        // Var Assignment
-        $this->username = !empty($config['database']['username']) ? $config['database']['username'] : '';
-        $this->password = !empty($config['database']['password']) ? $config['database']['password'] : '';
-        $this->host = !empty($config['database']['host']) ? $config['database']['host'] : '';
-        $this->database = !empty($config['database']['database']) ? $config['database']['database'] : '';
+        $this->username = $this->getDatabaseSetting($config, 'username');
+        $this->password = $this->getDatabaseSetting($config, 'password');
+        $this->host = $this->getDatabaseSetting($config, 'host');
+        $this->database = $this->getDatabaseSetting($config, 'database');
 
-        $this->sshTunnel = !empty($config['ssh_tunnel']['enabled']) ? $config['ssh_tunnel']['enabled'] : false;
-        $this->sshHost = !empty($config['ssh_tunnel']['host']) ? $config['ssh_tunnel']['host'] : '';
-        $this->sshUsername = !empty($config['ssh_tunnel']['username']) ? $config['ssh_tunnel']['username'] : '';
-        $this->sshPrivateKey = !empty($config['ssh_tunnel']['private_key']) ? $config['ssh_tunnel']['private_key'] : false;
-        $this->sshPassword = !empty($config['ssh_tunnel']['password']) ? $config['ssh_tunnel']['password'] : '';
+        $this->sshTunnel = $this->getSshSetting($config, 'enabled', false);
+        $this->sshTunnel = $this->getSshSetting($config, 'host', '');
+        $this->sshTunnel = $this->getSshSetting($config, 'username', '');
+    }
+
+    /**
+     * @param $config
+     * @param $key
+     * @param string $defaultValue
+     * @return string
+     */
+    protected function getDatabaseSetting($config, $key, $defaultValue = '')
+    {
+        $databaseSettingValue = $defaultValue;
+        if (!empty($config['database'][$key])) {
+            $databaseSettingValue = $config['database'][$key];
+        }
+
+        return $databaseSettingValue;
+    }
+
+    /**
+     * @param $config
+     * @param $key
+     * @param string $defaultValue
+     * @return string
+     */
+    protected function getSshSetting($config, $key, $defaultValue = '')
+    {
+        $sshSettingValue = $defaultValue;
+        if (!empty($config['ssh_tunnel'][$key])) {
+            $sshSettingValue = $config['ssh_tunnel'][$key];
+        }
+
+        return $sshSettingValue;
     }
 
     /**
@@ -189,38 +208,6 @@ class Environment
     }
 
     /**
-     * @return boolean
-     */
-    public function isSshPrivateKey()
-    {
-        return $this->sshPrivateKey;
-    }
-
-    /**
-     * @param boolean $sshPrivateKey
-     */
-    public function setSshPrivateKey($sshPrivateKey)
-    {
-        $this->sshPrivateKey = $sshPrivateKey;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSshPassword()
-    {
-        return $this->sshPassword;
-    }
-
-    /**
-     * @param string $sshPassword
-     */
-    public function setSshPassword($sshPassword)
-    {
-        $this->sshPassword = $sshPassword;
-    }
-
-    /**
      * @param $environmentName
      * @return Environment
      * @throws ConfigNotFoundException
@@ -228,8 +215,8 @@ class Environment
     public static function get($environmentName)
     {
         $environmentPath = getcwd() . '/.facilior/environments/' . $environmentName . '.yml';
-        if(!file_exists($environmentPath)){
-            throw new ConfigNotFoundException('Environment '.$environmentName.' couldnt be found!');
+        if (!file_exists($environmentPath)) {
+            throw new ConfigNotFoundException('Environment ' . $environmentName . ' couldnt be found!');
         }
 
         return new Environment(
@@ -245,8 +232,9 @@ class Environment
      */
     public static function create($environmentName)
     {
-        $fileHandle = file_put_contents(getcwd() . '/.facilior/environments/' . $environmentName . '.yml', self::defaultEnvironment($environmentName));
-        if(!$fileHandle){
+        $fileHandle = file_put_contents(getcwd() . '/.facilior/environments/' . $environmentName . '.yml',
+            self::defaultEnvironment($environmentName));
+        if (!$fileHandle) {
             throw new \Exception('Cant create environment.');
         }
 
@@ -257,16 +245,17 @@ class Environment
      * @param $environmentName
      * @return string
      */
-    private static function defaultEnvironment($environmentName){
+    private static function defaultEnvironment($environmentName)
+    {
         return '#' . $environmentName . PHP_EOL
-            . 'database:' . PHP_EOL
-            . '  username: dummy' . PHP_EOL
-            . '  password: dummy' . PHP_EOL
-            . '  host: 127.0.0.1' . PHP_EOL
-            . '  database: dummy' . PHP_EOL
-            . 'ssh_tunnel:' . PHP_EOL
-            . '  enabled: false' . PHP_EOL
-            . '  username: dummy' . PHP_EOL
-            . '  host: 127.0.0.1';
+        . 'database:' . PHP_EOL
+        . '  username: dummy' . PHP_EOL
+        . '  password: dummy' . PHP_EOL
+        . '  host: 127.0.0.1' . PHP_EOL
+        . '  database: dummy' . PHP_EOL
+        . 'ssh_tunnel:' . PHP_EOL
+        . '  enabled: false' . PHP_EOL
+        . '  username: dummy' . PHP_EOL
+        . '  host: 127.0.0.1';
     }
 }

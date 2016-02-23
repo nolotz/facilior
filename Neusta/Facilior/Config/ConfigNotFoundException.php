@@ -1,5 +1,6 @@
 <?php
 namespace Neusta\Facilior\Config;
+
 /**
  * Created by PhpStorm.
  * User: nlotzer

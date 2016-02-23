@@ -1,5 +1,6 @@
 <?php
 namespace Neusta\Facilior\Console;
+
 use Neusta\Facilior\Command\InitCommand;
 use Neusta\Facilior\Command\PullCommand;
 
@@ -16,7 +17,8 @@ class Kernel
      * Returns all Commands for Console
      * @return array
      */
-    public static function commands(){
+    public static function commands()
+    {
         return [
             new InitCommand(),
             new PullCommand()

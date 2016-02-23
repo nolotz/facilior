@@ -47,7 +47,7 @@ class Config
      */
     public function general($key = null)
     {
-        if(empty($key)){
+        if (empty($key)) {
             return $this->generalConfig;
         }
 
@@ -62,17 +62,17 @@ class Config
      */
     public function __call($environment, $arguments)
     {
-        if(empty($this->environments[$environment])) {
+        if (empty($this->environments[$environment])) {
             $filePath = getcwd() . '/.facilior/environments/' . $environment . '.yml';
-            if(!file_exists($filePath)){
+            if (!file_exists($filePath)) {
                 throw new ConfigNotFoundException('Connot find the environment ' . $environment);
             }
 
             $this->environments[$environment] = $this->parseConfigFile($filePath);
         }
 
-        if(!empty($this->environments[$environment])){
-            if(empty($arguments[0])) {
+        if (!empty($this->environments[$environment])) {
+            if (empty($arguments[0])) {
                 return $this->environments[$environment];
             }
 
@@ -99,7 +99,7 @@ class Config
      */
     protected function parseConfigFile($filePath)
     {
-        if(!file_exists($filePath)) {
+        if (!file_exists($filePath)) {
             throw new ConfigNotFoundException('Cannot find the file at path ' . $filePath);
         }
 

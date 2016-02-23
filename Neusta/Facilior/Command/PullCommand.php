@@ -43,8 +43,9 @@ class PullCommand extends AbstractCommand
         $sqlDumpPath = $sourceDatabase->exportSql();
 
         if($sourceDatabase->isLastCommandFailed()){
-            $this->consoleOutput->output('<fg=red>Error!!</> Pulling <fg=magenta>' . $input->getArgument('from') . '</> wasnt successfull.');
-            $this->consoleOutput->output('<fg=default>Please!!</> Check your Logs for more Information.');
+            $this->consoleOutput->output('<fg=red>Error!!</> Pulling <fg=magenta>' . $input->getArgument('from') . '</> wasn\'t successfull.');
+            $this->consoleOutput->output('<fg=default>Please</> check your Logs for more Information.');
+            return -1;
         } else {
             $this->consoleOutput->output('<fg=green>Success!!</> Pulling <fg=magenta>' . $input->getArgument('from') . '</> was successfull.');
         }
@@ -54,8 +55,9 @@ class PullCommand extends AbstractCommand
         $destinationDatabase->importSql($sqlDumpPath);
 
         if($destinationDatabase->isLastCommandFailed()){
-            $this->consoleOutput->output('<fg=red>Error!!</> Importing <fg=magenta>' .  $this->getDestinationEnvironment() . '</> wasnt successfull.');
-            $this->consoleOutput->output('<fg=default>Please!!</> Check your Logs for more Information.');
+            $this->consoleOutput->output('<fg=red>Error!!</> Importing <fg=magenta>' .  $this->getDestinationEnvironment() . '</> wasn\'t successfull.');
+            $this->consoleOutput->output('<fg=default>Please</> check your Logs for more Information.');
+            return -1;
         } else {
             $this->consoleOutput->output('<fg=green>Success!!</> Importing <fg=magenta>' .  $this->getDestinationEnvironment() . '</> was successfull.');
         }
