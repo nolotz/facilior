@@ -7,7 +7,7 @@
   "keywords": ["deployment", "database", "typo3", "facilior"],
   "require": {
     "php": ">=5.3",
-    "symfony/console": "*",
+    "symfony/console": "~2.2",
     "symfony/yaml": "*"
   },
   "require-dev": {
