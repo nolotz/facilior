@@ -1,7 +1,7 @@
 {
   "name": "neusta/facilior",
   "description": "A cli tool to interact easy with multiple databases.",
-  "homepage": "http://neusta-et.de",
+  "homepage": "http://neusta-sd.de",
   "license": "MIT",
   "type": "library",
   "keywords": ["deployment", "database", "typo3", "facilior"],
