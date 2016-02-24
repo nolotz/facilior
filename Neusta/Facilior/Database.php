@@ -61,7 +61,10 @@ class Database
             escapeshellarg($this->environment->getUsername()) . ' --password=\'' .
             escapeshellarg($this->environment->getPassword()) . '\'';
 
-        $command .= ' ' . escapeshellarg($this->environment->getDatabase()) . '" > ' . $destinationFile;
+        $command .= ' ' . escapeshellarg($this->environment->getDatabase()) . ' | gzip -3 -c" > ' .
+            $destinationFile . '.gz';
+
+        $command .= ' && gunzip ' . $destinationFile . '.gz';
 
         exec($command, $output, $returnVar);
         $this->consoleOutput->log(implode(PHP_EOL, $output));
@@ -95,9 +98,11 @@ class Database
     {
         //Uploading SQL Dump to Remote Host
         $dumpName = $this->environment->getDatabase() . '_' . time() . '.sql';
+        exec("gzip -3 -c " . $sourceFile);
+
         $command = "scp " . escapeshellarg($sourceFile) . ' ' .
             escapeshellarg($this->environment->getSshUsername()) . '@' .
-            escapeshellarg($this->environment->getSshHost()) . ':~/' . $dumpName;
+            escapeshellarg($this->environment->getSshHost()) . ':~/' . $dumpName . '.gz';
 
         exec($command, $output, $returnVar);
         $this->consoleOutput->log(implode(PHP_EOL, $output));
@@ -108,7 +113,7 @@ class Database
 
 
         $command = 'ssh -l ' . escapeshellarg($this->environment->getSshUsername()) . ' ' .
-            escapeshellarg($this->environment->getSshHost()) . ' "';
+            escapeshellarg($this->environment->getSshHost()) . ' "gunzip ' . $dumpName . '.gz' . ' && ';
 
         $command .= 'mysql -h ' . escapeshellarg($this->environment->getHost()) . ' -u ' .
             escapeshellarg($this->environment->getUsername()) . ' -p' .

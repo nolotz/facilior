@@ -1,17 +1,8 @@
 <?php
 namespace Neusta\Facilior\Console;
 
-/**
- * Created by PhpStorm.
- * User: nlotzer
- * Date: 04.02.2016
- * Time: 08:50
- */
-
-
 use Symfony\Component\Console\Formatter\OutputFormatterInterface;
 use Symfony\Component\Console\Output\ConsoleOutput;
-use Symfony\Component\Console\Output\OutputInterface;
 
 class ConsoleService
 {
@@ -87,7 +78,6 @@ class ConsoleService
                 $this->setUpLogFile();
             }
 
-
             $message = date('d.m.Y H:i:s -- ') . $message;
             fwrite($this->log, $message . PHP_EOL);
         }
@@ -124,5 +114,4 @@ class ConsoleService
     {
         return $this->logFile;
     }
-
 }

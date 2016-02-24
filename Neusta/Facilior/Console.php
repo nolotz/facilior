@@ -1,4 +1,7 @@
 <?php
+
+namespace Neusta\Facilior;
+
 /**
  * Created by PhpStorm.
  * User: nlotzer
@@ -6,16 +9,9 @@
  * Time: 08:17
  */
 
-namespace Neusta\Facilior;
-
-
 use Neusta\Facilior\Console\ConsoleService;
 use Neusta\Facilior\Console\Kernel;
-use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\ConsoleOutput;
-use Symfony\Component\Console\Output\OutputInterface;
 
 class Console
 {
@@ -53,14 +49,10 @@ class Console
 
     /**
      * Main function of Facilior
-     * @param null $arguments
      * @return int
      */
-    public function execute($arguments = null)
+    public function execute()
     {
-        //Defining internal variables
-        $exitCode = 0;
-
         //Greetings
         $this->console->log('Logging started');
         $this->console->output('<fg=default;options=bold>Logging started:</> <fg=magenta>' .
@@ -71,16 +63,4 @@ class Console
 
         return $exitCode;
     }
-
-
-    /**
-     * Overrides symfonys default commands
-     * @return void
-     */
-    protected function applyApplicationConfiguration()
-    {
-        $this->application->setDefaultCommand('');
-        $this->application->setCatchExceptions(false);
-    }
-
 }

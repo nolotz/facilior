@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: nlotzer
- * Date: 05.02.2016
- * Time: 08:24
- */
 
 namespace Neusta\Facilior\Command;
-
 
 use Neusta\Facilior\Database;
 use Neusta\Facilior\Environment;
@@ -30,11 +23,11 @@ class PullCommand extends AbstractCommand
     {
         $this->inputInterface = $input;
 
-        $sourceEnvironment = $input->getArgument('from');
-        $sourceEnvironment = Environment::get($sourceEnvironment);
+        $fromArg = $input->getArgument('from');
+        $sourceEnvironment = Environment::get($fromArg);
 
-        $destEnvironment = $this->getDestinationEnvironment();
-        $destEnvironment = Environment::get($destEnvironment);
+        $toArg = $this->getDestinationEnvironment();
+        $destEnvironment = Environment::get($toArg);
 
         $sourceDatabase = new Database($sourceEnvironment);
         $destinationDatabase = new Database($destEnvironment);
@@ -65,7 +58,6 @@ class PullCommand extends AbstractCommand
         } else {
             $this->consoleOutput->output('<fg=green>Success!!</> Importing <fg=magenta>' . $this->getDestinationEnvironment() . '</> was successfull.');
         }
-
 
         return 0;
     }

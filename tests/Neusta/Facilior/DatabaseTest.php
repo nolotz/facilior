@@ -45,7 +45,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @test
      * @return void
      */
     public function testExportSqlWillCreateTempFile()
