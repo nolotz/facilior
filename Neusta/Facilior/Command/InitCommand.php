@@ -18,11 +18,10 @@ class InitCommand extends AbstractCommand
 {
 
     /**
-     * @param InputInterface $input
      * @throws ProjectAlreadyExistsException
      * @return bool
      */
-    protected function execute(InputInterface $input)
+    protected function execute()
     {
         $exitCode = 50;
         $configDir = getcwd() . '/.facilior';
@@ -35,10 +34,18 @@ class InitCommand extends AbstractCommand
         $result = $this->createFolderStructure();
 
         if ($result) {
-            $this->consoleOutput->output('<fg=green>Success!!</> The configuration has been generated at <fg=cyan>.facilior</> directory.',
-                1);
-            $this->consoleOutput->output('<fg=default>Please!!</> Dont forget to configure your enviroments under <fg=magenta>.facilior/enviroments</>.',
-                1, 2);
+            $this->consoleOutput->output(
+                '<fg=green>Success!!</> The configuration has been generated at <fg=cyan>.facilior</> directory.',
+                1
+            );
+
+            $this->consoleOutput->output(
+                '<fg=default>Please!!</> Dont forget to configure your enviroments '
+                . 'under<fg=magenta>.facilior/enviroments</>.',
+                1,
+                2
+            );
+
         } else {
             $this->consoleOutput->output('<fg=red>Error!!</> Unable to generate the configuration', 1, 2);
             $exitCode = 0;
@@ -69,13 +76,25 @@ class InitCommand extends AbstractCommand
         $result[] = mkdir('.facilior/environments');
 
         $result[] = $this->createGeneralConfig();
+        $result[] = $this->createEnvironments();
 
+
+        return !in_array(false, $result);
+    }
+
+    /**
+     * @return array
+     * @throws \Exception
+     */
+    protected function createEnvironments()
+    {
+        $result = [];
         $result[] = Environment::create('live');
         $result[] = Environment::create('local');
         $result[] = Environment::create('development');
         $result[] = Environment::create('staging');
 
-        return !in_array(false, $result);
+        return $result;
     }
 
     /**

@@ -33,11 +33,11 @@ class PullCommand extends AbstractCommand
         $sourceEnvironment = $input->getArgument('from');
         $sourceEnvironment = Environment::get($sourceEnvironment);
 
-        $destinationEnvironment = $this->getDestinationEnvironment();
-        $destinationEnvironment = Environment::get($destinationEnvironment);
+        $destEnvironment = $this->getDestinationEnvironment();
+        $destEnvironment = Environment::get($destEnvironment);
 
         $sourceDatabase = new Database($sourceEnvironment);
-        $destinationDatabase = new Database($destinationEnvironment);
+        $destinationDatabase = new Database($destEnvironment);
 
         $this->consoleOutput->output('Starting pulling <fg=magenta>' . $input->getArgument('from') . '</> database...');
         $sqlDumpPath = $sourceDatabase->exportSql();
