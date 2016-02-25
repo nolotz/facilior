@@ -71,12 +71,13 @@ class InitCommand extends AbstractCommand
     protected function createFolderStructure()
     {
         $result = [];
-        $result[] = mkdir('.facilior');
-        $result[] = mkdir('.facilior/logs');
-        $result[] = mkdir('.facilior/environments');
+        $result[] = mkdir(getcwd() . '/.facilior');
+        $result[] = mkdir(getcwd() . '/.facilior/logs');
+        $result[] = mkdir(getcwd() . '/.facilior/environments');
 
         $result[] = $this->createGeneralConfig();
         $result[] = $this->createEnvironments();
+        $result[] = $this->createGitIgnoreInLogFolder();
 
 
         return !in_array(false, $result);
@@ -99,10 +100,23 @@ class InitCommand extends AbstractCommand
 
     /**
      * creates the general.yml file
+     * @return int|false
      */
     protected function createGeneralConfig()
     {
-        return file_put_contents('.facilior/general.yml', '#general config' . PHP_EOL . 'local_environment: local');
+        return file_put_contents(
+            getcwd() . '/.facilior/general.yml',
+            '#general config' . PHP_EOL . 'local_environment: local'
+        );
+    }
+
+    /**
+     * Creates the .gitignore in logs folder
+     * @return int|false
+     */
+    protected function createGitIgnoreInLogFolder()
+    {
+        return file_put_contents(getcwd() . '/.facilior/logs/.gitignore', '*' . PHP_EOL . '!.gitignore');
     }
 
 }

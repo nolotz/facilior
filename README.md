@@ -3,10 +3,12 @@ A cli tool to interact easy with multiple databases eg. Staging, Live, Developme
 
 ## Installation
 
-  - Clone Git
-  - Composer Install
-  - Add bin folder to PATH
-  - Run `facilior init` in your Project folder.
+  - Go to your Project
+  - Execute `composer require neusta/facilior:dev-master` or install it global
+  - Run `vendor/neusta/facilior/bin/facilior init` in your Project folder.
+  - Adjust your Environment settings
+  - Run `vendor/neusta/facilior/bin/facilior pull live local` to pull a database dump from your live Database to your local database.
+
   
   
   
