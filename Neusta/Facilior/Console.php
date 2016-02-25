@@ -58,8 +58,12 @@ class Console
         $this->console->output('<fg=default;options=bold>Logging started:</> <fg=magenta>' .
             $this->console->getLogFile() . '</>', 0, 2);
 
+        $fileService = new FileService();
+        $fileService->init();
+
         //Run Command and check if there is a config error
         $exitCode = $this->application->run();
+        $fileService->cleanup();
 
         return $exitCode;
     }

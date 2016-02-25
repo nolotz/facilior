@@ -21,6 +21,11 @@ class Database
     protected $lastCommandFailed = false;
 
     /**
+     * @var FileService
+     */
+    protected $fileService;
+
+    /**
      * @var Environment|null
      */
     protected $environment = null;
@@ -38,15 +43,7 @@ class Database
     {
         $this->environment = $environment;
         $this->consoleOutput = new ConsoleService();
-    }
-
-    /**
-     * Creates Temp File
-     * @return string
-     */
-    protected function createTempFile()
-    {
-        return tempnam(sys_get_temp_dir(), 'facilior');
+        $this->fileService = new FileService();
     }
 
     /**
@@ -97,10 +94,14 @@ class Database
     protected function tunneledDatabaseImport($sourceFile)
     {
         //Uploading SQL Dump to Remote Host
-        $dumpName = $this->environment->getDatabase() . '_' . time() . '.sql';
-        exec("gzip -3 -c " . $sourceFile);
+        $dumpName = uniqid(time() . '_facilior_');
+        exec("gzip -3 " . $sourceFile, $output, $returnVar);
 
-        $command = "scp " . escapeshellarg($sourceFile) . ' ' .
+        if ($returnVar != 0) {
+            return $returnVar;
+        }
+
+        $command = "scp " . escapeshellarg($sourceFile) . '.gz ' .
             escapeshellarg($this->environment->getSshUsername()) . '@' .
             escapeshellarg($this->environment->getSshHost()) . ':~/' . $dumpName . '.gz';
 
@@ -150,7 +151,7 @@ class Database
      */
     public function exportSql()
     {
-        $pathFile = $this->createTempFile();
+        $pathFile = $this->fileService->createTempFile();
 
         if ($this->environment->isSshTunnel()) {
             $status = $this->tunneledDatabaseExport($pathFile);
