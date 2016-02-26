@@ -1,16 +1,16 @@
 <?php
 namespace Neusta\Facilior;
 
+use Neusta\Facilior\Services\ConsoleService;
+use Neusta\Facilior\Services\FileService;
+use Neusta\Facilior\Services\ShellService;
+
 /**
  * Created by PhpStorm.
  * User: nlotzer
  * Date: 05.02.2016
  * Time: 09:52
  */
-
-
-
-use Neusta\Facilior\Console\ConsoleService;
 
 class Database
 {
@@ -36,6 +36,11 @@ class Database
     protected $consoleOutput = null;
 
     /**
+     * @var ShellService
+     */
+    protected $shellService;
+
+    /**
      * Database constructor.
      * @param Environment $environment
      */
@@ -44,6 +49,7 @@ class Database
         $this->environment = $environment;
         $this->consoleOutput = new ConsoleService();
         $this->fileService = new FileService();
+        $this->shellService = new ShellService();
     }
 
     /**
@@ -52,21 +58,21 @@ class Database
      */
     protected function tunneledDatabaseExport($destinationFile)
     {
-        $command = 'ssh -l ' . escapeshellarg($this->environment->getSshUsername()) . ' ' .
-            escapeshellarg($this->environment->getSshHost());
-        $command .= ' "mysqldump --add-drop-table -u ' .
-            escapeshellarg($this->environment->getUsername()) . ' --password=\'' .
-            escapeshellarg($this->environment->getPassword()) . '\'';
 
-        $command .= ' ' . escapeshellarg($this->environment->getDatabase()) . ' | gzip -3 -c" > ' .
-            $destinationFile . '.gz';
+        $command = 'ssh -l ##SSH_USER## ##SSH_HOST## "mysqldump --add-drop-table -u ##MYSQL_USER##
+        --password=\'##MYSQL_PASS##\' ##MYSQL_DB## | gzip -3 -c" > ##DESTFILE## && gunzip ##DESTFILE##';
 
-        $command .= ' && gunzip ' . $destinationFile . '.gz';
+        $output = $this->shellService->execute($command, array(
+            'SSH_USER'      => $this->environment->getSshUsername(),
+            'SSH_HOST'      => $this->environment->getSshHost(),
+            'MYSQL_USER'    => $this->environment->getUsername(),
+            'MYSQL_PASS'    => $this->environment->getPassword(),
+            'MYSQL_DB'      => $this->environment->getDatabase(),
+            'DESTFILE'      => $destinationFile
+        ));
 
-        exec($command, $output, $returnVar);
         $this->consoleOutput->log(implode(PHP_EOL, $output));
-
-        return $returnVar;
+        return $this->shellService->getLastExitCode();
     }
 
     /**
@@ -75,16 +81,18 @@ class Database
      */
     protected function databaseExport($destinationFile)
     {
-        $command = 'mysqldump --add-drop-table -h ' . escapeshellarg($this->environment->getHost()) . ' -u ' .
-            escapeshellarg($this->environment->getUsername()) . ' --password=\'' .
-            escapeshellarg($this->environment->getPassword()) . '\'';
+        $command = 'mysqldump --add-drop-table -u ##MYSQL_USER##
+        --password=\'##MYSQL_PASS##\' ##MYSQL_DB## > ##DESTFILE##';
 
-        $command .= ' ' . escapeshellarg($this->environment->getDatabase()) . ' > ' . $destinationFile;
+        $output = $this->shellService->execute($command, array(
+            'MYSQL_USER'    => $this->environment->getUsername(),
+            'MYSQL_PASS'    => $this->environment->getPassword(),
+            'MYSQL_DB'      => $this->environment->getDatabase(),
+            'DESTFILE'      => $destinationFile
+        ));
 
-        exec($command, $output, $returnVar);
         $this->consoleOutput->log(implode(PHP_EOL, $output));
-
-        return $returnVar;
+        return $this->shellService->getLastExitCode();
     }
 
     /**
@@ -93,9 +101,15 @@ class Database
      */
     protected function tunneledDatabaseImport($sourceFile)
     {
+        $gzipCommand = 'gzip -3 ##SOURCEFILE##';
+        $gzipLog = $this->shellService->execute($gzipCommand, array(
+            'SOURCEFILE' => $sourceFile
+        ));
+
+        $this->consoleOutput->log($gzipLog);
+
         //Uploading SQL Dump to Remote Host
         $dumpName = uniqid(time() . '_facilior_');
-        exec("gzip -3 " . $sourceFile, $output, $returnVar);
 
         if ($returnVar != 0) {
             return $returnVar;

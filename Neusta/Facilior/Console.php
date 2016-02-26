@@ -9,8 +9,9 @@ namespace Neusta\Facilior;
  * Time: 08:17
  */
 
-use Neusta\Facilior\Console\ConsoleService;
 use Neusta\Facilior\Console\Kernel;
+use Neusta\Facilior\Services\ConsoleService;
+use Neusta\Facilior\Services\FileService;
 use Symfony\Component\Console\Application;
 
 class Console

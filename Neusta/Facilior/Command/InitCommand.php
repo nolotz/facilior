@@ -79,7 +79,6 @@ class InitCommand extends AbstractCommand
         $result[] = $this->createEnvironments();
         $result[] = $this->createGitIgnoreInLogFolder();
 
-
         return !in_array(false, $result);
     }
 

@@ -1,8 +1,9 @@
 <?php
 namespace Neusta\Facilior\Console;
 
+use Neusta\Facilior\Command\DatabaseUpdateCommand;
+use Neusta\Facilior\Command\FilesGetCommand;
 use Neusta\Facilior\Command\InitCommand;
-use Neusta\Facilior\Command\PullCommand;
 
 /**
  * Created by PhpStorm.
@@ -21,7 +22,8 @@ class Kernel
     {
         return [
             new InitCommand(),
-            new PullCommand()
+            new DatabaseUpdateCommand(),
+            new FilesGetCommand()
         ];
     }
 }

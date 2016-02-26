@@ -7,7 +7,7 @@ use Neusta\Facilior\Environment;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 
-class PullCommand extends AbstractCommand
+class DatabaseUpdateCommand extends AbstractCommand
 {
 
     /**
@@ -69,8 +69,8 @@ class PullCommand extends AbstractCommand
     protected function configure()
     {
         $this
-            ->setName('pull')
-            ->setDescription('Does the magic.')
+            ->setName('database:update')
+            ->setDescription('Dumps the source database und push it to the specific to Database. (Default: local)')
             ->addArgument('from', InputArgument::REQUIRED, 'Which Source Database should be used?')
             ->addArgument(
                 'to',
