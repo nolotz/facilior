@@ -2,6 +2,7 @@
 namespace Neusta\Facilior\Services;
 
 use Neusta\Facilior\Environment;
+use Neusta\Facilior\Shell\ShellResult;
 
 /**
  * Created by PhpStorm.
@@ -26,22 +27,28 @@ class ShellService
     /**
      * @param $command
      * @param $arguments
-     * @return mixed
+     * @return ShellResult
      * @throws \Exception
      */
     public function execute($command, $arguments)
     {
         $shellCommand = $this->mapArguments($command, $arguments);
+        $shellResult = new ShellResult($shellCommand);
+
         exec($shellCommand, $output, $exitCode);
 
         $this->lastExitCode = $exitCode;
         $this->lastOutput = $output;
 
+        $shellResult->setExitCode($exitCode);
+        $shellResult->setResult($output);
+
+
         if ($exitCode != 0) {
             throw new \Exception("Error in Execution.");
         }
 
-        return $output;
+        return $shellResult;
     }
 
     /**

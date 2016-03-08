@@ -62,7 +62,8 @@ class Database
         $command = 'ssh -l ##SSH_USER## ##SSH_HOST## "mysqldump --add-drop-table -u ##MYSQL_USER##
         --password=\'##MYSQL_PASS##\' ##MYSQL_DB## | gzip -3 -c" > ##DESTFILE## && gunzip ##DESTFILE##';
 
-        $output = $this->shellService->execute($command, array(
+
+        $result = $this->shellService->execute($command, array(
             'SSH_USER'      => $this->environment->getSshUsername(),
             'SSH_HOST'      => $this->environment->getSshHost(),
             'MYSQL_USER'    => $this->environment->getUsername(),
@@ -71,8 +72,8 @@ class Database
             'DESTFILE'      => $destinationFile
         ));
 
-        $this->consoleOutput->log(implode(PHP_EOL, $output));
-        return $this->shellService->getLastExitCode();
+        $this->consoleOutput->log(implode(PHP_EOL, $result->getResult()));
+        return $result->getExitCode();
     }
 
     /**
@@ -84,15 +85,15 @@ class Database
         $command = 'mysqldump --add-drop-table -u ##MYSQL_USER##
         --password=\'##MYSQL_PASS##\' ##MYSQL_DB## > ##DESTFILE##';
 
-        $output = $this->shellService->execute($command, array(
+        $result = $this->shellService->execute($command, array(
             'MYSQL_USER'    => $this->environment->getUsername(),
             'MYSQL_PASS'    => $this->environment->getPassword(),
             'MYSQL_DB'      => $this->environment->getDatabase(),
             'DESTFILE'      => $destinationFile
         ));
 
-        $this->consoleOutput->log(implode(PHP_EOL, $output));
-        return $this->shellService->getLastExitCode();
+        $this->consoleOutput->log(implode(PHP_EOL, $result->getResult()));
+        return $result->getExitCode();
     }
 
     /**
@@ -102,22 +103,24 @@ class Database
     protected function tunneledDatabaseImport($sourceFile)
     {
         $gzipCommand = 'gzip -3 ##SOURCEFILE##';
-        $gzipLog = $this->shellService->execute($gzipCommand, array(
+        $gzipResult = $this->shellService->execute($gzipCommand, array(
             'SOURCEFILE' => $sourceFile
         ));
 
-        $this->consoleOutput->log($gzipLog);
+        $this->consoleOutput->log($gzipResult->getResult());
 
         //Uploading SQL Dump to Remote Host
         $dumpName = uniqid(time() . '_facilior_');
 
-        if ($returnVar != 0) {
-            return $returnVar;
+        if ($gzipResult->getExitCode() != 0) {
+            return $gzipResult->getExitCode();
         }
 
         $command = "scp " . escapeshellarg($sourceFile) . '.gz ' .
             escapeshellarg($this->environment->getSshUsername()) . '@' .
             escapeshellarg($this->environment->getSshHost()) . ':~/' . $dumpName . '.gz';
+
+        $scpCommand = 'scp ##SOURCE_FILE## ##DESTINATION_USERNAME##@##DESTINATION_HOST##';
 
         exec($command, $output, $returnVar);
         $this->consoleOutput->log(implode(PHP_EOL, $output));
