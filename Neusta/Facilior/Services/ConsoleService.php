@@ -1,5 +1,5 @@
 <?php
-namespace Neusta\Facilior\Console;
+namespace Neusta\Facilior\Services;
 
 use Symfony\Component\Console\Formatter\OutputFormatterInterface;
 use Symfony\Component\Console\Output\ConsoleOutput;

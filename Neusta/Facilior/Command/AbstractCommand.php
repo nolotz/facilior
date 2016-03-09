@@ -1,4 +1,6 @@
 <?php
+namespace Neusta\Facilior\Command;
+
 /**
  * Created by PhpStorm.
  * User: nlotzer
@@ -6,11 +8,9 @@
  * Time: 08:56
  */
 
-namespace Neusta\Facilior\Command;
-
 
 use Neusta\Facilior\Config;
-use Neusta\Facilior\Console\ConsoleService;
+use Neusta\Facilior\Services\ConsoleService;
 use Symfony\Component\Console\Command\Command;
 
 abstract class AbstractCommand extends Command

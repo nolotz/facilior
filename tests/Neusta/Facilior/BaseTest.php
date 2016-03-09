@@ -10,7 +10,7 @@ abstract class BaseTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUpConsoleStatics()
     {
-        $consoleReflection = new \ReflectionClass('Neusta\Facilior\Console\ConsoleService');
+        $consoleReflection = new \ReflectionClass('Neusta\Facilior\Services\ConsoleService');
         $logEnableProperty = $consoleReflection->getProperty('logEnabled');
         $logEnableProperty->setAccessible(true);
         $logEnableProperty->setValue($consoleReflection, false);

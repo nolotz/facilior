@@ -1,12 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: nlotzer
- * Date: 25.02.2016
- * Time: 09:46
- */
+namespace Neusta\Facilior\Services;
 
-namespace Neusta\Facilior;
 
 
 use RecursiveDirectoryIterator;
@@ -15,6 +9,11 @@ use RecursiveIteratorIterator;
 class FileService
 {
     const TEMPDIR_NAME = 'temp';
+
+    /**
+     * @var bool
+     */
+    protected $isRemote = false;
 
     /**
      * FileService constructor.
@@ -29,6 +28,7 @@ class FileService
      */
     public function init()
     {
+        $this->cleanup();
         $this->createTempFolder();
     }
 
@@ -37,7 +37,7 @@ class FileService
      */
     public function cleanup()
     {
-        //$this->deleteTempFolder();
+        $this->deleteTempFolder();
     }
 
     /**
@@ -45,7 +45,8 @@ class FileService
      */
     protected function createTempFolder()
     {
-        if (!file_exists(getcwd() . '/.facilior/' . FileService::TEMPDIR_NAME)) {
+        if (file_exists(getcwd() . '/.facilior/') &&
+            !file_exists(getcwd() . '/.facilior/' . FileService::TEMPDIR_NAME)) {
             mkdir(getcwd() . '/.facilior/' . FileService::TEMPDIR_NAME);
         }
     }
@@ -73,9 +74,7 @@ class FileService
         } while (file_exists($tempFolder . $fileName));
 
         $finalFile = $tempFolder . $fileName;
-        touch($finalFile);
-
-        return $finalFile;
+        return str_replace("\\", "/", $finalFile);
     }
 
 
@@ -100,4 +99,5 @@ class FileService
 
         rmdir($dir);
     }
+
 }
