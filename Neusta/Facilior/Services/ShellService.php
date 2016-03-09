@@ -13,16 +13,18 @@ use Neusta\Facilior\Shell\ShellResult;
 
 class ShellService
 {
+    /**
+     * @var ConsoleService
+     */
+    protected $consoleService;
 
     /**
-     * @var int
+     * ShellService constructor.
      */
-    protected $lastExitCode = 0;
-
-    /**
-     * @var string
-     */
-    protected $lastOutput = "";
+    public function __construct()
+    {
+        $this->consoleService = new ConsoleService();
+    }
 
     /**
      * @param $command
@@ -37,15 +39,14 @@ class ShellService
 
         exec($shellCommand, $output, $exitCode);
 
-        $this->lastExitCode = $exitCode;
-        $this->lastOutput = $output;
-
         $shellResult->setExitCode($exitCode);
-        $shellResult->setResult($output);
+        $shellResult->setOutput($output);
 
+        $this->consoleService->log('Executing: ' . $shellResult->getCommand());
+        $this->consoleService->log('Output:' . implode(PHP_EOL, $output));
 
         if ($exitCode != 0) {
-            throw new \Exception("Error in Execution.");
+            throw new \Exception("Error in Execution. Please check your Logs");
         }
 
         return $shellResult;
@@ -59,52 +60,9 @@ class ShellService
     protected function mapArguments($commandString, $arguments)
     {
         foreach ($arguments as $key => $argument) {
-            $argument = $this->prepareArgument($argument);
-            $commandString = str_replace($key, $argument, $commandString);
+            $commandString = str_replace('##' . $key . '##', $argument, $commandString);
         }
 
         return $commandString;
     }
-
-    /**
-     * @param $argument
-     * @return string
-     */
-    protected function prepareArgument($argument)
-    {
-        return '##' . escapeshellarg($argument) . '##';
-    }
-
-    /**
-     * @return int
-     */
-    public function getLastExitCode()
-    {
-        return $this->lastExitCode;
-    }
-
-    /**
-     * @param int $lastExitCode
-     */
-    public function setLastExitCode($lastExitCode)
-    {
-        $this->lastExitCode = $lastExitCode;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLastOutput()
-    {
-        return $this->lastOutput;
-    }
-
-    /**
-     * @param string $lastOutput
-     */
-    public function setLastOutput($lastOutput)
-    {
-        $this->lastOutput = $lastOutput;
-    }
-
 }

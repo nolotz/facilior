@@ -15,7 +15,7 @@ class Kernel
 {
 
     /**
-     * Returns all Commands for Console
+     * Returns all Commands for Services
      * @return array
      */
     public static function commands()

@@ -23,7 +23,7 @@ class ShellResult
     /**
      * @var string
      */
-    protected $result = '';
+    protected $output = '';
 
     /**
      * ShellResult constructor.
@@ -69,16 +69,16 @@ class ShellResult
     /**
      * @return string
      */
-    public function getResult()
+    public function getOutput()
     {
-        return $this->result;
+        return $this->output;
     }
 
     /**
-     * @param string $result
+     * @param string $output
      */
-    public function setResult($result)
+    public function setOutput($output)
     {
-        $this->result = $result;
+        $this->output = $output;
     }
 }

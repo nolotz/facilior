@@ -33,7 +33,7 @@ class Console
 
 
     /**
-     * Console constructor.
+     * Services constructor.
      */
     public function __construct()
     {
@@ -41,7 +41,7 @@ class Console
         $this->application = new Application('Neusta Facilior', FACILIOR_VERSION);
         $this->application->setAutoExit(false);
 
-        //Creates Console Output
+        //Creates Services Output
         $this->console = new ConsoleService();
 
         //Loads Commands into Application
