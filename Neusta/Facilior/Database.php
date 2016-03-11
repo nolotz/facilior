@@ -55,8 +55,8 @@ class Database
      */
     protected function tunneledDatabaseExport($destinationFile)
     {
-        $command = 'ssh -l ##SSHUSER## ##SSHHOST## \'mysqldump --add-drop-table -u ##MYSQLUSER## ' .
-            '-p##MYSQLPASS## ##MYSQLDB## | gzip -3 -c\' > ##DESTFILE##.gz && gzip -d ##DESTFILE##.gz';
+        $command = 'ssh -l ##SSHUSER## ##SSHHOST## "mysqldump --add-drop-table -u ##MYSQLUSER## ' .
+            '-p##MYSQLPASS## ##MYSQLDB## | gzip -3 -c" > ##DESTFILE##';
 
         $result = $this->shellService->execute($command, array(
             'SSHUSER'      => $this->environment->getSshUsername(),
@@ -64,8 +64,10 @@ class Database
             'MYSQLUSER'    => $this->environment->getUsername(),
             'MYSQLPASS'    => $this->environment->getPassword(),
             'MYSQLDB'      => $this->environment->getDatabase(),
-            'DESTFILE'      => $destinationFile
+            'DESTFILE'      => $destinationFile . '.gz'
         ));
+
+        $this->fileService->gunzip($destinationFile . '.gz', $destinationFile);
 
         return [$result];
     }
@@ -77,7 +79,7 @@ class Database
     protected function databaseExport($destinationFile)
     {
         $command = 'mysqldump --add-drop-table -u ##MYSQLUSER## ' .
-            '--password=\'##MYSQLPASS##\' ##MYSQLDB## > ##DESTFILE##';
+            '--password=##MYSQLPASS## ##MYSQLDB## > ##DESTFILE##';
 
         $result = $this->shellService->execute($command, array(
             'MYSQLUSER'    => $this->environment->getUsername(),
@@ -98,25 +100,21 @@ class Database
         //Create Dump Name Sql
         $dumpName = uniqid(time() . '_facilior_');
 
-        $gzipCommand = 'gzip -3 ##SOURCEFILE##';
-        $gzipResult = $this->shellService->execute($gzipCommand, array(
-            'SOURCEFILE' => $sourceFile
-        ));
+        //Zip the File
+        $this->fileService->gzip($sourceFile, $sourceFile . '.gz');
 
-        if ($gzipResult->getExitCode() != 0) {
-            return $gzipResult->getExitCode();
-        }
+        $baseSourceFile = basename($sourceFile . '.gz');
 
         $scpCommand = 'scp ##SOURCEFILE## ##SSHUSER##@##SSHHOST##:~/##DUMPNAME##';
         $scpResult = $this->shellService->execute($scpCommand, array(
-            'SOURCEFILE'    => $sourceFile . '.gz',
+            'SOURCEFILE'    => './.facilior/temp/' . $baseSourceFile,
             'SSHUSER'  => $this->environment->getSshUsername(),
             'SSHHOST'      => $this->environment->getSshHost(),
             'DUMPNAME'      => $dumpName . '.gz'
         ));
 
         if ($scpResult->getExitCode() != 0) {
-            return $scpResult->getExitCode();
+            return [$scpResult];
         }
 
         $sshCommand = 'ssh -l ##SSHUSER## ##SSHHOST## "gunzip ##DUMPNAME##.gz ' .
@@ -132,7 +130,7 @@ class Database
             'MYSQLDB'   =>  $this->environment->getDatabase()
         ));
 
-        return [$sshResult, $scpCommand, $gzipResult];
+        return [$sshResult, $scpResult];
     }
 
     /**

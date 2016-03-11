@@ -60,9 +60,19 @@ class ShellService
     protected function mapArguments($commandString, $arguments)
     {
         foreach ($arguments as $key => $argument) {
+            $argument = $this->prepareArgument($argument);
             $commandString = str_replace('##' . $key . '##', $argument, $commandString);
         }
 
         return $commandString;
+    }
+
+    /**
+     * @param $argument
+     * @return string
+     */
+    protected function prepareArgument($argument)
+    {
+        return escapeshellarg($argument);
     }
 }
