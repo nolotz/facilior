@@ -8,8 +8,6 @@ namespace Neusta\Facilior;
  * Time: 07:59
  */
 
-
-
 use Neusta\Facilior\Config\ConfigNotFoundException;
 use Symfony\Component\Config\Definition\Exception\Exception;
 
@@ -51,18 +49,30 @@ class Environment
      */
     protected $sshHost = '';
 
+    /**
+     * @var array
+     */
+    protected $files = [];
+
+    /**
+     * @var array
+     */
+    protected $folders = [];
+
 
     public function __construct(array $config)
     {
-        $this->username = $this->getDatabaseSetting($config, 'username');
-        $this->password = $this->getDatabaseSetting($config, 'password');
-        $this->host = $this->getDatabaseSetting($config, 'host');
-        $this->database = $this->getDatabaseSetting($config, 'database');
+        $this->username = $this->getSetting($config, 'database', 'username', '');
+        $this->password = $this->getSetting($config, 'database', 'password', '');
+        $this->host = $this->getSetting($config, 'database', 'host', '');
+        $this->database = $this->getSetting($config, 'database', 'database', '');
 
-        $this->sshTunnel = $this->getSshSetting($config, 'enabled', false);
-        $this->sshHost = $this->getSshSetting($config, 'host', '');
-        $this->sshUsername = $this->getSshSetting($config, 'username', '');
+        $this->sshTunnel = $this->getSetting($config, 'ssh_tunnel', 'enabled', false);
+        $this->sshHost = $this->getSetting($config, 'ssh_tunnel', 'host', '');
+        $this->sshUsername = $this->getSetting($config, 'ssh_tunnel', 'username', '');
 
+        $this->files = $this->getSetting($config, 'file_system', 'files', []);
+        $this->folders = $this->getSetting($config, 'file_system', 'folders', []);
     }
 
     /**
@@ -71,30 +81,14 @@ class Environment
      * @param string $defaultValue
      * @return string
      */
-    protected function getDatabaseSetting($config, $key, $defaultValue = '')
+    protected function getSetting($config, $rootKey, $key, $defaultValue = '')
     {
         $databaseSettingValue = $defaultValue;
-        if (isset($config['database'][$key])) {
-            $databaseSettingValue = $config['database'][$key];
+        if (isset($config[$rootKey][$key])) {
+            $databaseSettingValue = $config[$rootKey][$key];
         }
 
         return $databaseSettingValue;
-    }
-
-    /**
-     * @param $config
-     * @param $key
-     * @param string $defaultValue
-     * @return string
-     */
-    protected function getSshSetting($config, $key, $defaultValue = '')
-    {
-        $sshSettingValue = $defaultValue;
-        if (isset($config['ssh_tunnel'][$key])) {
-            $sshSettingValue = $config['ssh_tunnel'][$key];
-        }
-
-        return $sshSettingValue;
     }
 
     /**
@@ -210,6 +204,40 @@ class Environment
     }
 
     /**
+     * @return array
+     */
+    public function getFiles()
+    {
+        return $this->files;
+    }
+
+    /**
+     * @param array $files
+     */
+    public function setFiles($files)
+    {
+        $this->files = $files;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFolders()
+    {
+        return $this->folders;
+    }
+
+    /**
+     * @param array $folders
+     */
+    public function setFolders($folders)
+    {
+        $this->folders = $folders;
+    }
+
+
+
+    /**
      * @param $environmentName
      * @return Environment
      * @throws ConfigNotFoundException
@@ -262,6 +290,9 @@ class Environment
         . 'ssh_tunnel:' . PHP_EOL
         . '  enabled: false' . PHP_EOL
         . '  username: dummy' . PHP_EOL
-        . '  host: 127.0.0.1';
+        . '  host: 127.0.0.1' . PHP_EOL
+        . 'file_system:' . PHP_EOL
+        . '  files:' . PHP_EOL
+        . '  folders:';
     }
 }
