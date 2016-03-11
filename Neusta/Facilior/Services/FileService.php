@@ -100,4 +100,47 @@ class FileService
         rmdir($dir);
     }
 
+    /**
+     * @param $srcFile
+     * @param $dstFile
+     */
+    public function gunzip($srcFile, $dstFile)
+    {
+        $compressedFile = gzopen($srcFile, "rb");
+        $destinationFile = fopen($dstFile, "w");
+
+        while (!gzeof($compressedFile)) {
+            $string = gzread($compressedFile, 4096);
+            fwrite($destinationFile, $string, strlen($string));
+        }
+        gzclose($compressedFile);
+        fclose($destinationFile);
+    }
+
+    /**
+     * @param $srcFile
+     * @param $dstFile
+     * @param int $level
+     * @return bool
+     */
+    public function gzip($srcFile, $dstFile, $level = 3)
+    {
+        $mode = 'wb' . $level;
+        $error = false;
+        if ($fpOut = gzopen($dstFile, $mode)) {
+            if ($fpIn = fopen($srcFile, 'rb')) {
+                while (!feof($fpIn)) {
+                    gzwrite($fpOut, fread($fpIn, 1024 * 512));
+                }
+                fclose($fpIn);
+            } else {
+                $error = true;
+            }
+            gzclose($fpOut);
+        } else {
+            $error = true;
+        }
+
+        return $error ? false : $dstFile;
+    }
 }
