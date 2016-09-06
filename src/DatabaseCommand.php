@@ -17,7 +17,7 @@
 
 namespace Lotzer\Facilior;
 
-class Facilior
+class DatabaseCommand
 {
 
 }

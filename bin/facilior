@@ -1,31 +1,17 @@
 #!/usr/bin/env php
 <?php
-/**
- * (c) Noah-Jerome Lotzer <n.lotzer@neusta.de>
- * neusta eTourism GmbH
- **/
 
-//Checks Timezone is avaibele
-if (empty(ini_get('date.timezone'))) {
-    date_default_timezone_set('UTC');
-}
-
-
-//Defines Basedir & Version
-$baseDir = dirname(dirname(__FILE__));
-define('FACILIOR_DIRECTORY', $baseDir);
-define('FACILIOR_VERSION', '0.1');
-
-//Autoload Files
-if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
-    require_once __DIR__ . '/../vendor/autoload.php';
+if (file_exists(__DIR__.'/../vendor/autoload.php')) {
+    require __DIR__.'/../vendor/autoload.php';
 } else {
-    require_once __DIR__ . '/../../../autoload.php';
+    require __DIR__.'/../../autoload.php';
 }
 
-//Run Facilior
-$console = new \Neusta\Facilior\Console();
-$exitCode = $console->execute();
+$app = new Symfony\Component\Console\Application(
+    'Facilior', '1.0'
+);
 
-//Exit
-exit($exitCode);
+//$app->add(new \Lotzer\Facilior\DatabaseCommand());
+$app->add(new \Lotzer\Facilior\ResourcesCommand());
+
+$app->run();
