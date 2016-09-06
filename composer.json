@@ -1,10 +1,10 @@
 {
-  "name": "neusta/facilior",
+  "name": "lotzer/facilior",
   "description": "A cli tool to interact easy with multiple databases.",
-  "homepage": "http://neusta-sd.de",
+  "homepage": "http://www.noahlotzer.com",
   "license": "MIT",
   "type": "library",
-  "keywords": ["deployment", "database", "typo3", "facilior"],
+  "keywords": ["deployment", "database", "facilior"],
   "require": {
     "php": ">=5.3",
     "symfony/console": "~2.2",
@@ -17,12 +17,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Neusta\\Facilior\\": "./Neusta/Facilior"
+      "Lotzer\\Facilior\\": "./src/Facilior"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Neusta\\Facilior\\Tests\\": "./tests/Neusta/Facilior"
+      "Lotzer\\Facilior\\Tests\\": "./tests/Neusta/Facilior"
     }
   },
   "config": {
