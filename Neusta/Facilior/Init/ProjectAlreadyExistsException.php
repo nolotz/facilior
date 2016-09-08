@@ -9,6 +9,6 @@ namespace Neusta\Facilior\Init;
  */
 class ProjectAlreadyExistsException extends \Exception
 {
-    protected $message = 'Already exists .mage directory.';
+    protected $message = 'Already exists .facilior directory.';
     protected $code = 0x50726f6a656374416c7265616479457869737473;
 }

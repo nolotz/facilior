@@ -79,12 +79,13 @@ class Database
     protected function databaseExport($destinationFile)
     {
         $command = 'mysqldump --add-drop-table -u ##MYSQLUSER## ' .
-            '--password=##MYSQLPASS## ##MYSQLDB## > ##DESTFILE##';
+            '--password=##MYSQLPASS## -h ##MYSQLHOST## ##MYSQLDB## > ##DESTFILE##';
 
         $result = $this->shellService->execute($command, array(
             'MYSQLUSER'    => $this->environment->getUsername(),
             'MYSQLPASS'    => $this->environment->getPassword(),
             'MYSQLDB'      => $this->environment->getDatabase(),
+            'MYSQLHOST'     =>  $this->environment->getHost(),
             'DESTFILE'      => $destinationFile
         ));
 
