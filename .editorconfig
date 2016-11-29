@@ -1,0 +1,54 @@
+# EditorConfig is awesome: http://EditorConfig.org
+# Neusta ET v.0.1
+
+# top-most EditorConfig file
+root = true
+charset = utf-8
+
+# Get rid of whitespace to avoid diffs with a bunch of EOL changes
+trim_trailing_whitespace = true
+
+# Unix-style newlines with a newline ending every file
+[*]
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+curly_bracket_next_line = false
+spaces_around_operators = true
+indent_brace_style = K&R
+
+# Style-Files
+[*.{css,scss,sass,less}]
+indent_style = tab
+
+# HTML-Files
+[*.{html,mustache}]
+indent_style = tab
+
+# TMPL-Files
+[*.tmpl]
+indent_style = tab
+
+# JS-Files
+[*.js]
+indent_style = tab
+
+# JSON-Files
+[*.json]
+indent_style = tab
+
+# PHP-Files
+[*.php]
+indent_style = tab
+
+# ReST-Files
+[*.rst]
+indent_style = tab
+
+# MD-Files
+[*.md]
+indent_style = tab
+
+# package.json or .travis.yml
+[{package.json,.travis.yml}]
+indent_style = tab

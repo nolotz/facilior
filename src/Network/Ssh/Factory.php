@@ -1,4 +1,5 @@
 <?php
+namespace Nolotz\Network\Ssh;
 /***************************************************************
  *
  *  Copyright notice
@@ -14,10 +15,7 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
-namespace Lotzer\Facilior;
-
-class DatabaseCommand
+class Factory
 {
 
 }

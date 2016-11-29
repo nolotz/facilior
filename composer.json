@@ -1,9 +1,9 @@
 {
-  "name": "laravel/spark-installer",
+  "name": "nolotz/facilior",
   "description": "Command line tool for interacting with databases & project resources",
   "keywords": [
     "facilior",
-    "lotzer"
+    "nolotz"
   ],
   "license": "MIT",
   "authors": [
@@ -14,14 +14,16 @@
   ],
   "autoload": {
     "psr-4": {
-      "Lotzer\\Facilior\\": "src/"
+      "Nolotz\\Facilior\\": "src/"
     }
   },
   "require": {
-    "illuminate/support": "~5.1|~5.2",
-    "symfony/console": "~2.7|~3.0",
-    "symfony/process": "~2.7|~3.0",
-    "illuminate/filesystem": "~5.1|~5.2"
+    "monolog/monolog": "^1.22",
+    "symfony/console": "^3.1",
+    "guzzlehttp/guzzle": "^6.2",
+    "illuminate/support": "^5.3",
+    "symfony/process": "^3.1",
+    "phpseclib/phpseclib": "^2.0"
   },
   "bin": [
     "bin/facilior"

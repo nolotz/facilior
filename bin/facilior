@@ -1,17 +1,20 @@
 #!/usr/bin/env php
 <?php
 
-if (file_exists(__DIR__.'/../vendor/autoload.php')) {
-    require __DIR__.'/../vendor/autoload.php';
-} else {
-    require __DIR__.'/../../autoload.php';
-}
+///**
+// *  Register the auto loader
+// */
+//require __DIR__.'/../vendor/autoload.php';
+//
+//
+//$kernel = new \Nolotz\Console\Kernel();
+//
+//$status = $kernel->handle(
+//    $input = new \Symfony\Component\Console\Input\ArgvInput,
+//    new \Symfony\Component\Console\Output\ConsoleOutput
+//);
+//
+//$kernel->terminate($input, $status);
+//
+//exit($status);
 
-$app = new Symfony\Component\Console\Application(
-    'Facilior', '1.0'
-);
-
-//$app->add(new \Lotzer\Facilior\DatabaseCommand());
-$app->add(new \Lotzer\Facilior\ResourcesCommand());
-
-$app->run();
