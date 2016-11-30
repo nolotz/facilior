@@ -1,20 +1,17 @@
 #!/usr/bin/env php
 <?php
 
-///**
-// *  Register the auto loader
-// */
-//require __DIR__.'/../vendor/autoload.php';
-//
-//
-//$kernel = new \Nolotz\Console\Kernel();
-//
-//$status = $kernel->handle(
-//    $input = new \Symfony\Component\Console\Input\ArgvInput,
-//    new \Symfony\Component\Console\Output\ConsoleOutput
-//);
-//
-//$kernel->terminate($input, $status);
-//
-//exit($status);
+/**
+ *  Register the auto loader
+ */
+require __DIR__.'/../vendor/autoload.php';
 
+
+$kernel = new \Nolotz\Facilior\Console\Kernel();
+
+$status = $kernel->handle(
+    new \Symfony\Component\Console\Input\ArgvInput,
+    new \Symfony\Component\Console\Output\ConsoleOutput
+);
+
+exit($status);

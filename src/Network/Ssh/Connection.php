@@ -1,6 +1,7 @@
 <?php
-namespace Nolotz\Network\Ssh;
+namespace Nolotz\Facilior\Network\Ssh;
 
+use Nolotz\Facilior\Network\ConnectionInterface;
 use phpseclib\Net\SFTP;
 use phpseclib\Net\SSH2;
 
@@ -19,7 +20,7 @@ use phpseclib\Net\SSH2;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-class Connection
+class Connection implements ConnectionInterface
 {
     /**
      * @var SFTP|SSH2
@@ -31,22 +32,51 @@ class Connection
      */
     protected $remote = null;
 
-
-    public function connect()
+    /**
+     * Connection constructor.
+     *
+     * @param \Nolotz\Facilior\Network\Ssh\Remote $remote
+     */
+    public function __construct(Remote $remote)
     {
-
+        $this->remote = $remote;
     }
 
+    /**
+     * connect
+     *
+     * @return $this
+     */
+    public function connect()
+    {
+        if ($this->client instanceof SSH2) {
+            $this->disconnect();
+        }
+
+        $this->client = new SFTP(
+            $this->remote->getHost(),
+            $this->remote->getPort(),
+            $this->remote->getTimeout()
+        );
+
+        return $this;
+    }
+
+    /**
+     * Disconnect
+     *
+     * @return void
+     */
     public function disconnect()
     {
         $this->client->disconnect();
     }
 
-    protected function bootstrap()
-    {
-
-    }
-
+    /**
+     * status
+     *
+     * @return false|int
+     */
     public function status()
     {
         return $this->client->getExitStatus();
@@ -63,6 +93,8 @@ class Connection
     }
 
     /**
+     * delete
+     *
      * @param $path
      *
      * @return bool
@@ -72,6 +104,14 @@ class Connection
         return $this->client->delete($path);
     }
 
+    /**
+     * rename
+     *
+     * @param $remote
+     * @param $newRemote
+     *
+     * @return bool
+     */
     public function rename($remote, $newRemote)
     {
         return $this->client->rename($remote, $newRemote);
@@ -99,6 +139,7 @@ class Connection
     {
         $this->client->get($remote, $local);
     }
+
     /**
      * Get the contents of a remote file.
      *
@@ -110,6 +151,7 @@ class Connection
     {
         return $this->client->get($remote);
     }
+
     /**
      * Upload a local file to the server.
      *
@@ -122,6 +164,7 @@ class Connection
     {
         $this->client->put($remote, $local, SFTP::SOURCE_LOCAL_FILE);
     }
+
     /**
      * Upload a string to to the given file on the server.
      *

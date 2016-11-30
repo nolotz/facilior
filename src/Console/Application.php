@@ -15,24 +15,24 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-namespace Nolotz\Console;
+namespace Nolotz\Facilior\Console;
 
 use Symfony\Component\Process\ProcessUtils;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Process\PhpExecutableFinder;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Application as SymfonyApplication;
+use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Illuminate\Contracts\Console\Application as ApplicationContract;
 
 class Application extends SymfonyApplication implements ApplicationContract
 {
-
     /**
-     * The console application bootstrappers.
+     * The output from the previous command.
      *
-     * @var array
+     * @var \Symfony\Component\Console\Output\BufferedOutput
      */
-    protected static $bootstrappers = [];
+    protected $lastOutput;
 
     /**
      * Application constructor.
@@ -74,6 +74,35 @@ class Application extends SymfonyApplication implements ApplicationContract
     public function output()
     {
         return $this->lastOutput ? $this->lastOutput->fetch() : '';
+    }
+
+    /**
+     * resolveCommands
+     * @param array $commands
+     *
+     * @return $this
+     */
+    public function resolveCommands($commands)
+    {
+        $commands = is_array($commands) ? $commands : func_get_args();
+
+        foreach($commands as $command) {
+            $this->add(new $command);
+        }
+
+        return $this;
+    }
+
+    /**
+     * add
+     *
+     * @param \Symfony\Component\Console\Command\Command $command
+     *
+     * @return null|\Symfony\Component\Console\Command\Command
+     */
+    public function add(SymfonyCommand $command)
+    {
+        return parent::add($command);
     }
 
 }

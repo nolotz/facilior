@@ -15,7 +15,7 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-namespace Nolotz\Console;
+namespace Nolotz\Facilior\Console;
 
 
 use Symfony\Component\Console\Style\SymfonyStyle;

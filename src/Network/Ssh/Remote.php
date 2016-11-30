@@ -15,10 +15,9 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-namespace Nolotz\Network\Ssh;
+namespace Nolotz\Facilior\Network\Ssh;
 
 
-use Crypt_RSA;
 use phpseclib\Crypt\RSA;
 use phpseclib\System\SSH\Agent;
 
@@ -60,9 +59,76 @@ class Remote
         $this->timeout = $timeout;
     }
 
+    /**
+     * @return bool
+     */
     public function hasPassword()
     {
         return !empty($this->auth['password']) && $this->auth[''];
+    }
+
+    /**
+     * @return string
+     */
+    public function getHost()
+    {
+        return $this->host;
+    }
+
+    /**
+     * @param string $host
+     */
+    public function setHost($host)
+    {
+        $this->host = $host;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAuth()
+    {
+        return $this->auth;
+    }
+
+    /**
+     * @param array $auth
+     */
+    public function setAuth($auth)
+    {
+        $this->auth = $auth;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPort()
+    {
+        return $this->port;
+    }
+
+    /**
+     * @param int $port
+     */
+    public function setPort($port)
+    {
+        $this->port = $port;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTimeout()
+    {
+        return $this->timeout;
+    }
+
+    /**
+     * @param int $timeout
+     */
+    public function setTimeout($timeout)
+    {
+        $this->timeout = $timeout;
     }
 
     /**

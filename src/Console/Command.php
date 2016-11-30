@@ -15,8 +15,9 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-namespace Nolotz\Console;
+namespace Nolotz\Facilior\Console;
 
+use Illuminate\Console\Parser;
 use Illuminate\Contracts\Support\Arrayable;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -39,7 +40,7 @@ class Command extends SymfonyCommand
     /**
      * The output interface implementation.
      *
-     * @var \Nolotz\Console\OutputStyle
+     * @var OutputStyle
      */
     protected $output;
     /**
@@ -86,10 +87,17 @@ class Command extends SymfonyCommand
      */
     public function __construct()
     {
-        parent::__construct($this->name);
+        if(isset($this->signature)) {
+            $this->configureUsingFluentDefinition();
+        } else {
+            parent::__construct($this->name);
+        }
 
         $this->setDescription($this->description);
-        $this->specifyParameters();
+
+        if (! isset($this->signature)) {
+            $this->specifyParameters();
+        }
     }
 
     /**
@@ -138,7 +146,7 @@ class Command extends SymfonyCommand
     {
         $method = method_exists($this, 'handle') ? 'handle' : 'fire';
 
-        return call_user_func_array([$this, $method], null);
+        return call_user_func_array([$this, $method], func_get_args());
     }
 
     /**
@@ -501,5 +509,25 @@ class Command extends SymfonyCommand
     public function getOutput()
     {
         return $this->output;
+    }
+
+    /**
+     * Configure the console command using a fluent definition.
+     *
+     * @return void
+     */
+    protected function configureUsingFluentDefinition()
+    {
+        list($name, $arguments, $options) = Parser::parse($this->signature);
+
+        parent::__construct($name);
+
+        foreach ($arguments as $argument) {
+            $this->getDefinition()->addArgument($argument);
+        }
+
+        foreach ($options as $option) {
+            $this->getDefinition()->addOption($option);
+        }
     }
 }
