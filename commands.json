@@ -1,0 +1,15 @@
+{
+  "get-database-from-extern-to-local": [
+    "ssh -l $REMOTESSHUSER $REMOTESSHHOST \"mysqldump --add-drop-table -u $DBUSERDEV --password='$DBPASSDEV' $DBNAMEDEV | gzip -3 -c\" > $SQLDUMPNAMEGZ",
+    "gunzip $SQLDUMPNAMEGZ",
+    "mysql -u $DBUSERLOC -p$DBPASSLOC -h $DBHOSTLOC $DBNAMELOC < $SQLDUMPNAME",
+    "rm $SQLDUMPNAME"
+  ],
+  "get-files-from-extern-to-local": [
+    "[ -d $DESTINATION_DIR ] || mkdir $DESTINATION_DIR",
+    "scp -r $SOURCE_USER@$SOURCE_HOST:$SOURCE_DIR* $DESTINATION_DIR"
+  ],
+  "get-files-from-local-to-extern": [
+    "scp -r $SOURCE_DIR* $DESTINATION_USER@$DESTINATION_HOST:$DESTINATION_DIR"
+  ]
+}

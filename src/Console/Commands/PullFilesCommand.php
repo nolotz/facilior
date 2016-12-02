@@ -47,7 +47,7 @@ class PullFilesCommand extends Command
         $remote = EnvironmentFactory::make($this->argument('remote'));
         $destination = EnvironmentFactory::make($this->argument('destination'));
 
-        $exportService = new ExportService();
-        $exportService->tunneledExport($remote, $destination);
+        $exportService = new ExportService($this->input, $this->output);
+        $exportService->tunnel($remote, $destination);
     }
 }

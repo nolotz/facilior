@@ -4,8 +4,7 @@ database:
   password: dummy
   host: 127.0.0.1
   database: dummy
-  tunnel: false
+ssh: false
 files:
-    paths:
-        uploads: ./uploads/
-        fileadmin: ./fileadmin/
+  uploads: ./web/uploads/
+  fileadmin: ./web/fileadmin/

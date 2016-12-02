@@ -23,20 +23,37 @@ class Environment
     /**
      * @var object
      */
-    protected $database;
+    protected $database = [
+        'username' => '',
+        'password' => '',
+        'host'      => '',
+        'database' =>  ''
+    ];
 
     /**
      * @var object
      */
-    protected $files;
+    protected $files = [];
+
+    /**
+     * @var array
+     */
+    protected $ssh = [
+        'username' => '',
+        'password' => '',
+        'host'      => '',
+        'timeout'  => 10,
+        'port'     =>  22
+    ];
 
     /**
      * Environment constructor.
      */
-    protected function __construct($database, $files)
+    protected function __construct(array $database, array $files, $ssh = false)
     {
         $this->database = $database;
         $this->files = $files;
+        $this->ssh = $ssh;
     }
 
     /**
@@ -48,14 +65,6 @@ class Environment
     }
 
     /**
-     * @param object $database
-     */
-    public function setDatabase($database)
-    {
-        $this->database = $database;
-    }
-
-    /**
      * @return object
      */
     public function getFiles()
@@ -64,26 +73,17 @@ class Environment
     }
 
     /**
-     * @param object $files
+     * @return array
      */
-    public function setFiles($files)
+    public function getSsh()
     {
-        $this->files = $files;
+        return $this->ssh;
     }
 
     /**
      * @return static
      */
     public static function create($rawEnvironment) {
-        $database = [];
-        $files = [];
-
-        if(!empty($rawEnvironment['database']))
-            $database = (object) $rawEnvironment['database'];
-
-        if(!empty($rawEnvironment['files']))
-            $files = (object) $rawEnvironment['files'];
-
-        return new static($database, $files);
+        return new static($rawEnvironment['database'], $rawEnvironment['files'], $rawEnvironment['ssh']);
     }
 }
