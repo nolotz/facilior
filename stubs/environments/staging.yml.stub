@@ -1,0 +1,15 @@
+#staging
+database:
+  username: dummy
+  password: dummy
+  host: 127.0.0.1
+  database: dummy
+  tunnel:
+    username: dummy
+    host: dummy.example.com
+files:
+    host: dummy.example.com
+    username: dummy
+    paths:
+        '/var/www/example.com/httpdocs/mage/current/web/uploads/': './web/uploads/'
+        '/var/www/example.com/httpdocs/mage/current/web/fileadmin/': './web/fileadmin/'

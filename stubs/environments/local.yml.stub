@@ -1,0 +1,11 @@
+#local
+database:
+  username: dummy
+  password: dummy
+  host: 127.0.0.1
+  database: dummy
+  tunnel: false
+files:
+    paths:
+        uploads: ./uploads/
+        fileadmin: ./fileadmin/

@@ -18,6 +18,7 @@
 namespace Nolotz\Facilior\Network\Ssh;
 
 
+use Nolotz\Facilior\Console\Environment;
 use phpseclib\Crypt\RSA;
 use phpseclib\System\SSH\Agent;
 
@@ -51,20 +52,11 @@ class Remote
      * @param $port
      * @param $timeout
      */
-    public function __construct($host, $auth, $port, $timeout)
+    public function __construct($host, $port, $timeout)
     {
         $this->host = $host;
-        $this->auth = $auth;
         $this->port = $port;
         $this->timeout = $timeout;
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasPassword()
-    {
-        return !empty($this->auth['password']) && $this->auth[''];
     }
 
     /**
@@ -81,22 +73,6 @@ class Remote
     public function setHost($host)
     {
         $this->host = $host;
-    }
-
-    /**
-     * @return array
-     */
-    public function getAuth()
-    {
-        return $this->auth;
-    }
-
-    /**
-     * @param array $auth
-     */
-    public function setAuth($auth)
-    {
-        $this->auth = $auth;
     }
 
     /**
@@ -135,14 +111,13 @@ class Remote
      * creates a new remote host
      *
      * @param       $host
-     * @param array $auth
      * @param int   $port
      * @param int   $timeout
      *
      * @return static
      */
-    public static function create($host, array $auth, $port = 22, $timeout = 10)
+    public static function create($host, $port = 22, $timeout = 10)
     {
-        return new static($host, $auth, $port, $timeout);
+        return new static($host, $port, $timeout);
     }
 }

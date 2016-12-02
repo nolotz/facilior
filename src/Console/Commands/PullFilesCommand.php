@@ -18,24 +18,23 @@
 namespace Nolotz\Facilior\Console\Commands;
 
 
-use Nolotz\Database\ExportResult;
-use Nolotz\Database\ExportService;
 use Nolotz\Facilior\Console\Command;
 use Nolotz\Facilior\Console\EnvironmentFactory;
+use Nolotz\Facilior\Files\ExportService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class PullDatabaseCommand extends Command
+class PullFilesCommand extends Command
 {
     /**
      * @var string
      */
-    protected $signature = 'pull:database {remote} {destination=local}';
+    protected $signature = 'pull:files {remote} {destination=local}';
 
     /**
      * @var string
      */
-    protected $description = 'Dumps remote database and import it to specific destination.';
+    protected $description = 'Downloads all required project resources from remote host';
 
     /**
      * handle
@@ -46,8 +45,9 @@ class PullDatabaseCommand extends Command
     public function handle(InputInterface $input, OutputInterface $output)
     {
         $remote = EnvironmentFactory::make($this->argument('remote'));
-        $destination = EnvironmentFactory::make($this->argument('local'));
+        $destination = EnvironmentFactory::make($this->argument('destination'));
 
-
+        $exportService = new ExportService();
+        $exportService->tunneledExport($remote, $destination);
     }
 }

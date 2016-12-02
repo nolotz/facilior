@@ -1,7 +1,9 @@
 <?php
 namespace Nolotz\Facilior\Console;
 
+use Nolotz\Facilior\Console\Commands\InitCommand;
 use Nolotz\Facilior\Console\Commands\PullDatabaseCommand;
+use Nolotz\Facilior\Console\Commands\PullFilesCommand;
 use Nolotz\Facilior\Console\Commands\TestCommand;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -40,6 +42,8 @@ class Kernel
      */
     protected $commands = [
         PullDatabaseCommand::class,
+        InitCommand::class,
+        PullFilesCommand::class,
     ];
 
     /**

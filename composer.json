@@ -24,7 +24,8 @@
     "illuminate/support": "^5.3",
     "symfony/process": "^3.1",
     "phpseclib/phpseclib": "^2.0",
-    "illuminate/console": "^5.3"
+    "illuminate/console": "^5.3",
+    "symfony/yaml": "^3.2"
   },
   "bin": [
     "bin/facilior"

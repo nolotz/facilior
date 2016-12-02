@@ -1,0 +1,17 @@
+#live
+database:
+  username: dummy
+  password: dummy
+  host: 127.0.0.1
+  database: dummy
+  tunnel:
+    username: dummy
+    password: dummy
+    host: dummy.example.com
+files:
+    host: dummy.example.com
+    username: dummy
+    password: dummy
+    paths:
+        uploads: /var/www/example.com/httpdocs/mage/current/web/uploads/
+        fileadmin: /var/www/example.com/httpdocs/mage/current/web/fileadmin/

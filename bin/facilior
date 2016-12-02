@@ -6,7 +6,14 @@
  */
 require __DIR__.'/../vendor/autoload.php';
 
+/**
+ * Defines bin path constant
+ */
+define('FACILIOR_BIN', __DIR__);
 
+/**
+ * Instanciate a new Kernel object
+ */
 $kernel = new \Nolotz\Facilior\Console\Kernel();
 
 $status = $kernel->handle(
