@@ -49,5 +49,7 @@ class PullFilesCommand extends Command
 
         $exportService = new ExportService($this->input, $this->output);
         $exportService->tunnel($remote, $destination);
+
+        $this->info('Success!! Transfer successfully completed.');
     }
 }

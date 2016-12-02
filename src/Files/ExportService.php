@@ -114,6 +114,10 @@ class ExportService
             $process->setTimeout(0);
             $process->run();
 
+            $process->wait(function ($type, $buffer) {
+                $this->output->write($buffer);
+            });
+
             if (!$process->isSuccessful()) {
                 throw new ProcessFailedException($process);
             }
