@@ -54,10 +54,12 @@ class Console
      */
     public function execute()
     {
-        //Greetings
-        $this->console->log('Logging started');
-        $this->console->output('<fg=default;options=bold>Logging started:</> <fg=magenta>' .
+        if(!file_exists(getcwd() . '/.facilior/logs/')) {
+            $this->console->logEnabled = false;
+            $this->console->log('Logging started');
+            $this->console->output('<fg=default;options=bold>Logging started:</> <fg=magenta>' .
             $this->console->getLogFile() . '</>', 0, 2);
+        }
 
         $fileService = new FileService();
         $fileService->init();

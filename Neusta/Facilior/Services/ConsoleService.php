@@ -10,7 +10,7 @@ class ConsoleService
     /**
      * @var bool
      */
-    protected $logEnabled = true;
+    public $logEnabled = true;
 
     /**
      * @var null|resource
