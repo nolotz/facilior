@@ -18,8 +18,7 @@
 namespace Nolotz\Facilior\Console\Commands;
 
 
-use Nolotz\Database\ExportResult;
-use Nolotz\Database\ExportService;
+use Nolotz\Facilior\Database\ExportService;
 use Nolotz\Facilior\Console\Command;
 use Nolotz\Facilior\Console\EnvironmentFactory;
 use Symfony\Component\Console\Input\InputInterface;
@@ -37,17 +36,27 @@ class PullDatabaseCommand extends Command
      */
     protected $description = 'Dumps remote database and import it to specific destination.';
 
-    /**
-     * handle
-     *
-     * @param \Symfony\Component\Console\Input\InputInterface   $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     */
+	/**
+	 * @param \Symfony\Component\Console\Input\InputInterface   $input
+	 * @param \Symfony\Component\Console\Output\OutputInterface $output
+	 *
+	 * @return int
+	 */
     public function handle(InputInterface $input, OutputInterface $output)
     {
-        $remote = EnvironmentFactory::make($this->argument('remote'));
-        $destination = EnvironmentFactory::make($this->argument('local'));
+		$remote = EnvironmentFactory::make($this->argument('remote'));
+		$destination = EnvironmentFactory::make($this->argument('destination'));
 
+		$exportService = new ExportService($this->input, $this->output);
+		$result = $exportService->setEnvironments($remote, $destination)
+			->run();
 
+		if($result) {
+			$this->info('Success!! Transfer successfully completed.');
+			return 0;
+		}
+
+		$this->error('Failed!! Please check your logs.');
+		return -1;
     }
 }

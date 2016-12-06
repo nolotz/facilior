@@ -29,27 +29,41 @@ class PullFilesCommand extends Command
     /**
      * @var string
      */
-    protected $signature = 'pull:files {remote} {destination=local}';
+    protected $signature = 'pull:files {remote} {destination=local} {--rsync}';
 
     /**
      * @var string
      */
     protected $description = 'Downloads all required project resources from remote host';
 
-    /**
-     * handle
-     *
-     * @param \Symfony\Component\Console\Input\InputInterface   $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     */
+	/**
+	 * handle
+	 *
+	 * @param \Symfony\Component\Console\Input\InputInterface   $input
+	 * @param \Symfony\Component\Console\Output\OutputInterface $output
+	 *
+	 * @return int
+	 */
     public function handle(InputInterface $input, OutputInterface $output)
     {
         $remote = EnvironmentFactory::make($this->argument('remote'));
         $destination = EnvironmentFactory::make($this->argument('destination'));
 
         $exportService = new ExportService($this->input, $this->output);
-        $exportService->tunnel($remote, $destination);
 
-        $this->info('Success!! Transfer successfully completed.');
+        if($this->option('rsync')) {
+        	$exportService->replaceCommand('scp', 'rsync');
+		}
+
+        $result = $exportService->setEnvironments($remote, $destination)
+			->run();
+
+        if($result) {
+			$this->info('Success!! Transfer successfully completed.');
+			return 0;
+		}
+
+		$this->error('Failed!! Please check your logs.');
+		return -1;
     }
 }

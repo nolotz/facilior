@@ -7,9 +7,14 @@
 require __DIR__.'/../vendor/autoload.php';
 
 /**
- * Defines bin path constant
+ * Defines needed constants
  */
+define('FACILIOR_START', microtime());
 define('FACILIOR_BIN', __DIR__);
+define('FACILIOR_LOG', realpath(getcwd() . '/.facilior/logs'));
+
+logger("test");
+
 
 /**
  * Instanciate a new Kernel object

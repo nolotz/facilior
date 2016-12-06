@@ -15,10 +15,29 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-namespace Nolotz\Database;
+namespace Nolotz\Facilior\Tests\Foundation;
 
 
-class ExportResult
+use Nolotz\Facilior\Foundation\Process\CommandParser;
+use PHPUnit\Framework\TestCase;
+
+class CommandParserTest extends TestCase
 {
+	/**
+	 * @var CommandParser
+	 */
+	protected $commandParser;
 
+	/**
+	 * @setUp
+	 */
+	public function setUp()
+	{
+		$this->commandParser = new CommandParser();
+	}
+
+	public function testParserWillResolveAnArray()
+	{
+
+	}
 }

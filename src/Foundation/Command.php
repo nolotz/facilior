@@ -43,11 +43,7 @@ class Command
      * @return mixed
      */
     public function getKey($key) {
-        if(!empty($this->commands[$key])) {
-            return $this->commands[$key];
-        }
-
-        return $key;
+        return array_get($this->commands, $key, false);
     }
 
     /**

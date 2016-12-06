@@ -5,8 +5,11 @@ use Nolotz\Facilior\Console\Commands\InitCommand;
 use Nolotz\Facilior\Console\Commands\PullDatabaseCommand;
 use Nolotz\Facilior\Console\Commands\PullFilesCommand;
 use Nolotz\Facilior\Console\Commands\TestCommand;
+use Nolotz\Facilior\Foundation\LoggerFactory;
+use Nolotz\Facilior\Foundation\Test;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Debug\Exception\FatalThrowableError;
 use Symfony\Component\Console\Application as ConsoleApplication;
 
@@ -47,6 +50,13 @@ class Kernel
     ];
 
     /**
+     * @var array
+     */
+    protected $singletons = [
+        LoggerFactory::class
+    ];
+
+    /**
      * @param \Symfony\Component\Console\Input\ArgvInput      $argvInput
      * @param \Symfony\Component\Console\Output\ConsoleOutput $consoleOutput
      *
@@ -55,6 +65,8 @@ class Kernel
     public function handle(ArgvInput $argvInput, ConsoleOutput $consoleOutput)
     {
         try {
+            $this->registerSingletons();
+            $this->displayLogo($consoleOutput);
             return $this->getApplication()->run($argvInput, $consoleOutput);
         } catch (\Exception $e) {
             $this->renderException($consoleOutput, $e);
@@ -86,6 +98,30 @@ class Kernel
     protected function renderException($output, \Exception $e)
     {
         (new ConsoleApplication())->renderException($e, $output);
+    }
+
+    /**
+     *
+     */
+    protected function registerSingletons()
+    {
+        foreach ($this->singletons as $singleton) {
+            app()->singleton($singleton, $singleton);
+        }
+    }
+
+	/**
+	 * @param \Symfony\Component\Console\Output\OutputInterface $output
+	 */
+	protected function displayLogo(OutputInterface $output)
+	{
+		$output->writeln('  ______         _ _ _            ');
+		$output->writeln(' |  ____|       (_) (_)           ');
+		$output->writeln(' | |__ __ _  ___ _| |_  ___  _ __ ');
+		$output->writeln(" |  __/ _` |/ __| | | |/ _ \| \'__|");
+		$output->writeln(' | | | (_| | (__| | | | (_) | |   ');
+		$output->writeln(' |_|  \__,_|\___|_|_|_|\___/|_|   ');
+		$output->writeln('                                  ');
     }
 
 }

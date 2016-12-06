@@ -81,6 +81,18 @@ class Environment
     }
 
     /**
+     * @return array
+     */
+    public function toArray()
+    {
+        return [
+            'ssh' => $this->ssh,
+            'files' => $this->files,
+            'database' => $this->database
+        ];
+    }
+
+    /**
      * @return static
      */
     public static function create($rawEnvironment) {

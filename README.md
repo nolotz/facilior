@@ -12,3 +12,22 @@ A cli tool to interact easy with multiple databases eg. Staging, Live, Developme
   
   
   
+## Environments
+
+All configuration files are written in Yaml. 
+```
+#comment
+database:
+  username: [string]
+  password: [string]
+  host: [string]
+  database: [string]
+ssh:
+  username: [string]
+  password: [string]
+  host: [string]
+  timeout: [integer]
+files:
+  [key]: [string]
+  fileadmin: [string]
+```

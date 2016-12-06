@@ -15,28 +15,42 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-namespace Nolotz\Database;
+namespace Nolotz\Facilior\Database;
 
 
 use Nolotz\Database\ExportInterface;
 use Nolotz\Database\ExportResult;
+use Nolotz\Facilior\Foundation\AbstractExportService;
+use Nolotz\Facilior\Foundation\Command;
 
-class ExportService
+class ExportService extends AbstractExportService
 {
+	/**
+	 * run
+	 *
+	 * @return bool
+	 */
+	public function run()
+	{
+		$this->assignVariables(['source' => $this->source, 'destination' => $this->destination]);
+		$commands = Command::get($this->findCommandKey());
 
-    /**
-     * @return ExportResult
-     */
-    public function directExport()
-    {
-        // TODO: Implement directExport() method.
-    }
+		foreach ($commands as $command) {
+			$this->processes[] = $this->createProcess($command);
+		}
 
-    /**
-     * @return ExportResult
-     */
-    public function tunneledExport()
-    {
-        // TODO: Implement tunneledExport() method.
-    }
+		return $this->evaluateResult();
+	}
+
+	/**
+	 * @return array
+	 */
+	protected function commandKeys()
+	{
+		return [
+			'database.extern-local' => is_array($this->source->getSsh()) && !is_array($this->destination->getSsh()),
+			'database.extern-extern' => is_array($this->source->getSsh()) && is_array($this->destination->getSsh()),
+			'database.local-extern' => !is_array($this->source->getSsh()) && is_array($this->destination->getSsh()),
+		];
+	}
 }

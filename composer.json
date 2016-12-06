@@ -15,7 +15,10 @@
   "autoload": {
     "psr-4": {
       "Nolotz\\Facilior\\": "src/"
-    }
+    },
+    "files": [
+      "helpers.php"
+    ]
   },
   "require": {
     "monolog/monolog": "^1.22",
@@ -25,7 +28,11 @@
     "symfony/process": "^3.2",
     "phpseclib/phpseclib": "^2.0",
     "illuminate/console": "^5.3",
-    "symfony/yaml": "^3.2"
+    "symfony/yaml": "^3.2",
+    "illuminate/container": "^5.3",
+    "phpunit/phpunit": "^5.7"
+  },
+  "require-dev": {
   },
   "bin": [
     "bin/facilior"

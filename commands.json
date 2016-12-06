@@ -1,15 +1,46 @@
 {
-  "get-database-from-extern-to-local": [
-    "ssh -l $REMOTESSHUSER $REMOTESSHHOST \"mysqldump --add-drop-table -u $DBUSERDEV --password='$DBPASSDEV' $DBNAMEDEV | gzip -3 -c\" > $SQLDUMPNAMEGZ",
-    "gunzip $SQLDUMPNAMEGZ",
-    "mysql -u $DBUSERLOC -p$DBPASSLOC -h $DBHOSTLOC $DBNAMELOC < $SQLDUMPNAME",
-    "rm $SQLDUMPNAME"
-  ],
-  "get-files-from-extern-to-local": [
-    "[ -d $DESTINATION_DIR ] || mkdir $DESTINATION_DIR",
-    "scp -r $SOURCE_USER@$SOURCE_HOST:$SOURCE_DIR* $DESTINATION_DIR"
-  ],
-  "get-files-from-local-to-extern": [
-    "scp -r $SOURCE_DIR* $DESTINATION_USER@$DESTINATION_HOST:$DESTINATION_DIR"
-  ]
+  "database": {
+	"extern-local": [
+	  "[ -d temp.facilior ] || mkdir temp.facilior",
+	  "ssh -l {source.ssh.username} {source.ssh.host} \"mysqldump --add-drop-table -u {source.database.username} --password='{source.database.password}' {source.database.database} | gzip -3 -c\" > temp.facilior/dbdump.sql.gz",
+	  "gunzip temp.facilior/dbdump.sql.gz",
+	  "mysql -u {destination.database.username} -p{destination.database.password} -h {destination.database.host} {destination.database.database} < temp.facilior/dbdump.sql",
+	  "rm -R temp.facilior"
+	],
+	"extern-extern": [
+	  "[ -d temp.facilior ] || mkdir temp.facilior",
+	  "ssh -l {source.ssh.username} {source.ssh.host} \"mysqldump --add-drop-table -u {source.database.username} --password='{source.database.password}' {source.database.database} | gzip -3 -c\" > temp.facilior/dbdump.sql.gz",
+	  "scp temp.facilior/dbdump.sql.gz {destination.ssh.username}@{destination.ssh.host}:dbdump.sql.gz",
+	  "ssh -l {destination.ssh.username} {destination.ssh.host} \"gunzip -f dbdump.sql.gz\"",
+	  "ssh -l {destination.ssh.username} {destination.ssh.host} \"mysql -u {destination.database.username} -p{destination.database.password} -h {destination.database.host} {destination.database.database} < dbdump.sql\"",
+	  "ssh -l {destination.ssh.username} {destination.ssh.host} \"rm dbdump.sql\"",
+	  "rm -R temp.facilior"
+	],
+	"local-extern": [
+	  "scp -r {source.files.{currentFileKey}}* {destination.ssh.username}@{destination.ssh.host}:{destination.files.{currentFileKey}}"
+	]
+  },
+  "files": {
+    "extern-extern": [
+	  "[ -d temp.facilior ] || mkdir temp.facilior",
+      "scp -r {source.ssh.username}@{source.ssh.host}:{source.files.{currentFileKey}}* temp.facilior",
+      "scp -r temp.facilior/* {destination.ssh.username}@{destination.ssh.host}:{destination.files.{currentFileKey}}",
+      "rm -R temp.facilior"
+    ],
+    "local-extern": [
+      "scp -r {source.files.{currentFileKey}}* {destination.ssh.username}@{destination.ssh.host}:{destination.files.{currentFileKey}}"
+    ],
+    "extern-local": [
+      "[ -d {destination.files.{currentFileKey}} ] || mkdir {destination.files.{currentFileKey}}",
+      "scp -r {source.ssh.username}@{source.ssh.host}:{source.files.{currentFileKey}}* {destination.files.{currentFileKey}}"
+    ]
+  },
+  "hooks": {
+	"on-start": [
+	  "[ -d temp.facilior ] || mkdir temp.facilior"
+	],
+	"on-exit": [
+	  "rm -R temp.facilior"
+	]
+  }
 }
