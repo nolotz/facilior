@@ -18,9 +18,6 @@ define('FACILIOR_BIN', __DIR__);
 define('FACILIOR_ROOT', realpath(getcwd() . '/.facilior'));
 define('FACILIOR_LOG', realpath(getcwd() . '/.facilior/logs'));
 
-logger("test");
-
-
 /**
  * Instanciate a new Kernel object
  */
