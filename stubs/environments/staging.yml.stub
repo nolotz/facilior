@@ -6,7 +6,6 @@ database:
   database: dummy
 ssh:
   username: dummy
-  password: dummy
   host: dummy.example.com
 files:
   uploads: /var/www/example.com/httpdocs/mage/current/web/uploads/
