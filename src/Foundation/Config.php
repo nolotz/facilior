@@ -18,7 +18,7 @@
 namespace Nolotz\Facilior\Foundation;
 
 
-class Command
+class Config
 {
     private static $instance = null;
 

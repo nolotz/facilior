@@ -18,10 +18,8 @@
 namespace Nolotz\Facilior\Database;
 
 
-use Nolotz\Database\ExportInterface;
-use Nolotz\Database\ExportResult;
 use Nolotz\Facilior\Foundation\AbstractExportService;
-use Nolotz\Facilior\Foundation\Command;
+use Nolotz\Facilior\Foundation\Config;
 
 class ExportService extends AbstractExportService
 {
@@ -33,7 +31,7 @@ class ExportService extends AbstractExportService
 	public function run()
 	{
 		$this->assignVariables(['source' => $this->source, 'destination' => $this->destination]);
-		$commands = Command::get($this->findCommandKey());
+		$commands = Config::get($this->findCommandKey());
 
 		foreach ($commands as $command) {
 			$this->processes[] = $this->createProcess($command);

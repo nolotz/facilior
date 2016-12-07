@@ -9,8 +9,9 @@ require __DIR__.'/../vendor/autoload.php';
 /**
  * Defines needed constants
  */
-define('FACILIOR_START', microtime());
+define('FACILIOR_START', date('Ymd-Hsi'));
 define('FACILIOR_BIN', __DIR__);
+define('FACILIOR_ROOT', realpath(getcwd() . '/.facilior'));
 define('FACILIOR_LOG', realpath(getcwd() . '/.facilior/logs'));
 
 logger("test");

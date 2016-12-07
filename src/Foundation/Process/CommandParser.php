@@ -35,14 +35,14 @@ class CommandParser
      * @return mixed
      */
     public function parse($command, array $variables) {
-        logger('Command template: ' . $command);
-		$parsedCommand = $command;
+        logger('Command template: ' . $command['command']);
 
 		foreach ($this->regexOrder as $regex) {
-			$parsedCommand = $this->matchByRegex($regex, $parsedCommand, $variables);
+			$command['command'] = $this->matchByRegex($regex, $command['command'], $variables);
+			$command['description'] = $this->matchByRegex($regex, $command['description'], $variables);
 		}
 
-        return $parsedCommand;
+        return $command;
     }
 
 	/**

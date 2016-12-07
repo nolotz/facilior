@@ -1,46 +1,104 @@
 {
   "database": {
 	"extern-local": [
-	  "[ -d temp.facilior ] || mkdir temp.facilior",
-	  "ssh -l {source.ssh.username} {source.ssh.host} \"mysqldump --add-drop-table -u {source.database.username} --password='{source.database.password}' {source.database.database} | gzip -3 -c\" > temp.facilior/dbdump.sql.gz",
-	  "gunzip temp.facilior/dbdump.sql.gz",
-	  "mysql -u {destination.database.username} -p{destination.database.password} -h {destination.database.host} {destination.database.database} < temp.facilior/dbdump.sql",
-	  "rm -R temp.facilior"
+	  {
+		"command": "ssh -v -l {source.ssh.username} {source.ssh.host} \"mysqldump --add-drop-table -u {source.database.username} --password='{source.database.password}' {source.database.database} | gzip -3 -c\" > temp.facilior/dbdump.sql.gz",
+		"description": "Creates and downloading SQL file from {source.ssh.host}"
+	  },
+	  {
+		"command": "gunzip temp.facilior/dbdump.sql.gz",
+		"description": "Decompress dump"
+	  },
+	  {
+		"command": "mysql -u {destination.database.username} -p{destination.database.password} -h {destination.database.host} {destination.database.database} < temp.facilior/dbdump.sql",
+		"description": "Import into Database"
+	  }
 	],
 	"extern-extern": [
-	  "[ -d temp.facilior ] || mkdir temp.facilior",
-	  "ssh -l {source.ssh.username} {source.ssh.host} \"mysqldump --add-drop-table -u {source.database.username} --password='{source.database.password}' {source.database.database} | gzip -3 -c\" > temp.facilior/dbdump.sql.gz",
-	  "scp temp.facilior/dbdump.sql.gz {destination.ssh.username}@{destination.ssh.host}:dbdump.sql.gz",
-	  "ssh -l {destination.ssh.username} {destination.ssh.host} \"gunzip -f dbdump.sql.gz\"",
-	  "ssh -l {destination.ssh.username} {destination.ssh.host} \"mysql -u {destination.database.username} -p{destination.database.password} -h {destination.database.host} {destination.database.database} < dbdump.sql\"",
-	  "ssh -l {destination.ssh.username} {destination.ssh.host} \"rm dbdump.sql\"",
-	  "rm -R temp.facilior"
+	  {
+		"command": "ssh -v -l {source.ssh.username} {source.ssh.host} \"mysqldump --add-drop-table -u {source.database.username} --password='{source.database.password}' {source.database.database} | gzip -3 -c\" > temp.facilior/dbdump.sql.gz",
+		"description": "Creates and downloading SQL file from {source.ssh.host}"
+	  },
+	  {
+		"command": "scp -v temp.facilior/dbdump.sql.gz {destination.ssh.username}@{destination.ssh.host}:dbdump.sql.gz",
+		"description": "Uploading to {destination.ssh.host}"
+	  },
+	  {
+		"command": "ssh -v -l {destination.ssh.username} {destination.ssh.host} \"gunzip -f dbdump.sql.gz\"",
+		"description": "Decompress file"
+	  },
+	  {
+		"command": "ssh -v -l {destination.ssh.username} {destination.ssh.host} \"mysql -u {destination.database.username} -p{destination.database.password} -h {destination.database.host} {destination.database.database} < dbdump.sql\"",
+		"description": "Import into Database"
+	  },
+	  {
+		"command": "ssh -v -l {destination.ssh.username} {destination.ssh.host} \"rm dbdump.sql\"",
+		"description": "Cleaning up on remote host"
+	  }
 	],
 	"local-extern": [
-	  "scp -r {source.files.{currentFileKey}}* {destination.ssh.username}@{destination.ssh.host}:{destination.files.{currentFileKey}}"
+	  {
+		"command": "mysqldump --add-drop-table -u {source.database.username} --password='{source.database.password}' {source.database.database} | gzip -3 -c > temp.facilior/dbdump.sql.gz",
+		"description": "Dumping Database"
+	  },
+	  {
+		"command": "scp -v temp.facilior/dbdump.sql.gz {destination.ssh.username}@{destination.ssh.host}:dbdump.sql.gz",
+		"description": "Uploading to {destination.ssh.host}"
+	  },
+	  {
+		"command": "ssh -v -l {destination.ssh.username} {destination.ssh.host} \"gunzip -f dbdump.sql.gz\"",
+		"description": "Decompress file"
+	  },
+	  {
+		"command": "ssh -v -l {destination.ssh.username} {destination.ssh.host} \"mysql -u {destination.database.username} -p{destination.database.password} -h {destination.database.host} {destination.database.database} < dbdump.sql\"",
+		"description": "Import into Database"
+	  },
+	  {
+		"command": "ssh -v -l {destination.ssh.username} {destination.ssh.host} \"rm dbdump.sql\"",
+		"description": "Cleaning up on remote host"
+	  }
 	]
   },
   "files": {
-    "extern-extern": [
-	  "[ -d temp.facilior ] || mkdir temp.facilior",
-      "scp -r {source.ssh.username}@{source.ssh.host}:{source.files.{currentFileKey}}* temp.facilior",
-      "scp -r temp.facilior/* {destination.ssh.username}@{destination.ssh.host}:{destination.files.{currentFileKey}}",
-      "rm -R temp.facilior"
-    ],
-    "local-extern": [
-      "scp -r {source.files.{currentFileKey}}* {destination.ssh.username}@{destination.ssh.host}:{destination.files.{currentFileKey}}"
-    ],
-    "extern-local": [
-      "[ -d {destination.files.{currentFileKey}} ] || mkdir {destination.files.{currentFileKey}}",
-      "scp -r {source.ssh.username}@{source.ssh.host}:{source.files.{currentFileKey}}* {destination.files.{currentFileKey}}"
-    ]
+	"extern-extern": [
+	  {
+		"command": "scp -v -r {source.ssh.username}@{source.ssh.host}:{source.files.{currentFileKey}}* temp.facilior",
+		"description": "Downloading {currentFileKey} directory from {source.ssh.host}"
+	  },
+	  {
+		"command": "scp -v -r temp.facilior/* {destination.ssh.username}@{destination.ssh.host}:{destination.files.{currentFileKey}}",
+		"description": "Uploading {currentFileKey} directory to {source.ssh.host}"
+	  }
+	],
+	"local-extern": [
+	  {
+		"command": "scp -v -r {source.files.{currentFileKey}}* {destination.ssh.username}@{destination.ssh.host}:{destination.files.{currentFileKey}}",
+		"description": "Uploading {currentFileKey} directory to {source.ssh.host}"
+	  }
+	],
+	"extern-local": [
+	  {
+		"command": "[ -d {destination.files.{currentFileKey}} ] || mkdir {destination.files.{currentFileKey}}",
+		"description": "Creating {currentFileKey} folder"
+	  },
+	  {
+		"command": "scp -v -r {source.ssh.username}@{source.ssh.host}:{source.files.{currentFileKey}}* {destination.files.{currentFileKey}}",
+		"description": "Downloading {currentFileKey} directory from {source.ssh.host}"
+	  }
+	]
   },
   "hooks": {
 	"on-start": [
-	  "[ -d temp.facilior ] || mkdir temp.facilior"
+	  {
+		"command": "[ -d temp.facilior ] || mkdir temp.facilior",
+		"description": "Creating temporary directories"
+	  }
 	],
 	"on-exit": [
-	  "rm -R temp.facilior"
+	  {
+		"command": "[ ! -d temp.facilior ] || rm -R temp.facilior",
+		"description": "Clean up project directory"
+	  }
 	]
   }
 }

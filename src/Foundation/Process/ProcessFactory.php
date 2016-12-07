@@ -25,34 +25,38 @@ use Symfony\Component\Process\Process;
 class ProcessFactory
 {
 	/**
-	 * @param                                                   $command
-	 * @param array                                             $variables
-	 * @param \Symfony\Component\Console\Output\OutputInterface $outputInterface
+	 * @param array $command
+	 * @param array $variables
+	 * @param array $replacedCommands
 	 *
 	 * @return \Symfony\Component\Process\Process
 	 */
-    public static function create($command, array $variables, array $replacedCommands = array(), OutputInterface $outputInterface) {
+    public static function create(array $command, array $variables, array $replacedCommands = array()) {
         $parsedCommand = (new CommandParser())->parse($command, $variables);
-        $parsedCommand = str_replace(array_keys($replacedCommands), $replacedCommands, $parsedCommand);
+		$parsedCommand['command'] = str_replace(array_keys($replacedCommands), $replacedCommands, $parsedCommand['command']);
 
-        logger('Executing command: ' . $parsedCommand);
-        $outputInterface->writeln('Executing command: ' . $parsedCommand);
+        logger('Executing command: ' . $parsedCommand['command']);
+        output()->comment($parsedCommand['description']);
 
         /** @var Process $process */
-        $process = new Process($parsedCommand);
+        $process = new Process($parsedCommand['command']);
 
         $process->setTimeout(0)
             ->run();
 
+		logger($process->getOutput());
+		logger($process->getErrorOutput());
+
         if(!$process->isSuccessful()) {
-            logger($process->getOutput());
             logger('Executing command wasn\'t successful: ' . $process->getErrorOutput());
-			$outputInterface->writeln('Executing command wasn\'t successful. Please check your logs.');
+			output()->warn('Executing command wasn\'t successful. Please check your logs');
             throw new ProcessFailedException($process);
         }
 
         logger('Executing command was successful');
-		$outputInterface->writeln('Successful executed.');
+		output()->info('Successfully executed');
+		output()->line('');
+
         return $process;
     }
 }

@@ -34,15 +34,12 @@ class PullDatabaseCommand extends Command
     /**
      * @var string
      */
-    protected $description = 'Dumps remote database and import it to specific destination.';
+    protected $description = 'Dumps the remote database and import it to a specific destination.';
 
 	/**
-	 * @param \Symfony\Component\Console\Input\InputInterface   $input
-	 * @param \Symfony\Component\Console\Output\OutputInterface $output
-	 *
 	 * @return int
 	 */
-    public function handle(InputInterface $input, OutputInterface $output)
+    public function handle()
     {
 		$remote = EnvironmentFactory::make($this->argument('remote'));
 		$destination = EnvironmentFactory::make($this->argument('destination'));
@@ -51,12 +48,6 @@ class PullDatabaseCommand extends Command
 		$result = $exportService->setEnvironments($remote, $destination)
 			->run();
 
-		if($result) {
-			$this->info('Success!! Transfer successfully completed.');
-			return 0;
-		}
-
-		$this->error('Failed!! Please check your logs.');
-		return -1;
+		return $result ? 0 : -1;
     }
 }

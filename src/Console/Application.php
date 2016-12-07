@@ -104,5 +104,4 @@ class Application extends SymfonyApplication implements ApplicationContract
     {
         return parent::add($command);
     }
-
 }

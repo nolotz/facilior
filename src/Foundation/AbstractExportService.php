@@ -155,14 +155,14 @@ abstract class AbstractExportService
     }
 
 	/**
-	 * @param $command
-	 * @param $additionalVariables
+	 * @param array $command
+	 * @param array $additionalVariables
 	 *
 	 * @return \Symfony\Component\Process\Process
 	 */
 	protected function createProcess($command, $additionalVariables = [])
 	{
-		return ProcessFactory::create($command, $this->getVariables($additionalVariables), $this->replacedCommands, $this->outputInterface);
+		return ProcessFactory::create($command, $this->getVariables($additionalVariables), $this->replacedCommands);
     }
 
 	/**

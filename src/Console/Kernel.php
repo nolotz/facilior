@@ -50,13 +50,6 @@ class Kernel
     ];
 
     /**
-     * @var array
-     */
-    protected $singletons = [
-        LoggerFactory::class
-    ];
-
-    /**
      * @param \Symfony\Component\Console\Input\ArgvInput      $argvInput
      * @param \Symfony\Component\Console\Output\ConsoleOutput $consoleOutput
      *
@@ -64,18 +57,29 @@ class Kernel
      */
     public function handle(ArgvInput $argvInput, ConsoleOutput $consoleOutput)
     {
+		$result = -1;
+
         try {
-            $this->registerSingletons();
-            $this->displayLogo($consoleOutput);
-            return $this->getApplication()->run($argvInput, $consoleOutput);
+			output()->init(new OutputStyle($argvInput, $consoleOutput));
+			$this->displayLogo();
+			hook()->fire('on-start');
+			$result = $this->getApplication()->run($argvInput, $consoleOutput);
         } catch (\Exception $e) {
+			hook()->fire('on-error');
             $this->renderException($consoleOutput, $e);
         } catch (\Throwable $e) {
+			hook()->fire('on-error');
             $e = new FatalThrowableError($e);
             $this->renderException($consoleOutput, $e);
         }
 
-        return 1;
+        if ($result == 0) {
+			output()->info('Success!! Everything got successfully executed.');
+		} else {
+        	output()->warn('Failed!! Please check your logs');
+		}
+
+        return $result;
     }
 
     /**
@@ -100,28 +104,18 @@ class Kernel
         (new ConsoleApplication())->renderException($e, $output);
     }
 
-    /**
-     *
-     */
-    protected function registerSingletons()
-    {
-        foreach ($this->singletons as $singleton) {
-            app()->singleton($singleton, $singleton);
-        }
-    }
-
 	/**
-	 * @param \Symfony\Component\Console\Output\OutputInterface $output
+	 * @return void
 	 */
-	protected function displayLogo(OutputInterface $output)
+	protected function displayLogo()
 	{
-		$output->writeln('  ______         _ _ _            ');
-		$output->writeln(' |  ____|       (_) (_)           ');
-		$output->writeln(' | |__ __ _  ___ _| |_  ___  _ __ ');
-		$output->writeln(" |  __/ _` |/ __| | | |/ _ \| \'__|");
-		$output->writeln(' | | | (_| | (__| | | | (_) | |   ');
-		$output->writeln(' |_|  \__,_|\___|_|_|_|\___/|_|   ');
-		$output->writeln('                                  ');
+		output()->line('  ______         _ _ _            ');
+		output()->line(' |  ____|       (_) (_)           ');
+		output()->line(' | |__ __ _  ___ _| |_  ___  _ __ ');
+		output()->line(" |  __/ _` |/ __| | | |/ _ \| \'__|");
+		output()->line(' | | | (_| | (__| | | | (_) | |   ');
+		output()->line(' |_|  \__,_|\___|_|_|_|\___/|_|   ');
+		output()->line('                                  ');
     }
 
 }
