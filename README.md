@@ -1,33 +1,31 @@
-# facilior
-A cli tool to interact easy with multiple databases eg. Staging, Live, Development
+<p align="center">
+	<h1>Facilior</h1>
+</p>
+
+<p align="center">
+	<a href="https://travis-ci.org/nolotz/facilior"><img src="https://travis-ci.org/nolotz/facilior.svg" alt="Build Status"></a>
+</p>
 
 ## Installation
 
-  - Go to your Project
-  - Execute `composer require neusta/facilior:dev-master` or install it global
-  - Run `vendor/neusta/facilior/bin/facilior init` in your Project folder.
-  - Adjust your Environment settings
-  - Run `vendor/neusta/facilior/bin/facilior pull live local` to pull a database dump from your live Database to your local database.
+Clone this repository to any location on your system, then run the composer install command within the cloned directory so the dependencies will be installed. 
+Finally add that location to your system's PATH so that the ` spark ` executable can be run from anywhere on your system.
 
-  
-  
-  
-## Environments
+## Usage
 
-All configuration files are written in Yaml. 
-```
-#comment
-database:
-  username: [string]
-  password: [string]
-  host: [string]
-  database: [string]
-ssh:
-  username: [string]
-  password: [string]
-  host: [string]
-  timeout: [integer]
-files:
-  [key]: [string]
-  fileadmin: [string]
-```
+### New Project
+
+Dummy text
+
+### Files
+
+Dummy text
+
+### Database
+
+Dummy text
+
+## License
+
+Facilior is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).
+
