@@ -11,7 +11,7 @@
 ## Installation
 
 Clone this repository to any location on your system, then run the composer install command within the cloned directory so the dependencies will be installed. 
-Finally add that location to your system's PATH so that the ` spark ` executable can be run from anywhere on your system.
+Finally add that location to your system's PATH so that the ` facilior ` executable can be run from anywhere on your system.
 
 ## Usage
 
