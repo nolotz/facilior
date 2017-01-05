@@ -1,4 +1,4 @@
-<p align="justify">
+<p align="center">
 
 # facilior
 
