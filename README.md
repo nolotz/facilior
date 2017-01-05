@@ -1,5 +1,12 @@
+<center>
+
 # facilior
+
+[![Build Status](https://travis-ci.org/nolotz/facilior.svg?branch=master)](https://travis-ci.org/nolotz/facilior)
+
 A cli tool to interact easy with multiple databases eg. Staging, Live, Development
+
+</center
 
 ## Installation
 
