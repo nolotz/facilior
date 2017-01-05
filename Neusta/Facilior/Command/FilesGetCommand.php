@@ -2,6 +2,8 @@
 namespace Neusta\Facilior\Command;
 
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Created by PhpStorm.
@@ -26,8 +28,16 @@ class FilesGetCommand extends AbstractCommand
             ->addArgument('from', InputArgument::REQUIRED, 'Which Source should be used?');
     }
 
-    protected function execute()
+    /**
+     * execute
+     *
+     * @param \Symfony\Component\Console\Input\InputInterface   $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     *
+     * @return bool|int
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
-
+        return 1;
     }
 }

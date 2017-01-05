@@ -18,10 +18,14 @@ class InitCommand extends AbstractCommand
 {
 
     /**
-     * @throws ProjectAlreadyExistsException
-     * @return bool
+     * execute
+     *
+     * @param \Symfony\Component\Console\Input\InputInterface   $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     *
+     * @return bool|int
      */
-    protected function execute()
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         $exitCode = 50;
         $configDir = getcwd() . '/.facilior';
