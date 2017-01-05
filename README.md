@@ -6,7 +6,7 @@
 
 A cli tool to interact easy with multiple databases eg. Staging, Live, Development
 
-</center
+</center>
 
 ## Installation
 
