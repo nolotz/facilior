@@ -32,7 +32,7 @@ class Config
      */
     private function __construct()
     {
-        $this->commands = json_decode(file_get_contents(FACILIOR_BIN . '/../commands.json'), true);
+        $this->commands = json_decode(file_get_contents(FACILIOR_BIN . '/commands.json'), true);
     }
 
     /**
