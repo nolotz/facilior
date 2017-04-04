@@ -65,12 +65,10 @@ class HookManager
 	 */
 	public function fire($hook)
 	{
-		if (!isset($this->hooks[$hook])) {
-			throw new \Exception('Hook '.$hook.' not found');
-		}
-
-		foreach ($this->hooks[$hook] as $command) {
-			ProcessFactory::create($command, []);
+		if (isset($this->hooks[$hook])) {
+			foreach ($this->hooks[$hook] as $command) {
+				ProcessFactory::create($command, []);
+			}
 		}
 	}
 }
