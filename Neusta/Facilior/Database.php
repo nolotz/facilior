@@ -56,7 +56,7 @@ class Database
     protected function tunneledDatabaseExport($destinationFile)
     {
         $command = 'ssh -l ##SSHUSER## ##SSHHOST## "mysqldump --add-drop-table -u ##MYSQLUSER## ' .
-            '-p##MYSQLPASS## ##MYSQLDB## | gzip -3 -c" > ##DESTFILE##';
+            '-p##MYSQLPASS## -h ##MYSQLHOST## ##MYSQLDB## | gzip -3 -c" > ##DESTFILE##';
 
         $result = $this->shellService->execute($command, array(
             'SSHUSER'      => $this->environment->getSshUsername(),
@@ -64,6 +64,7 @@ class Database
             'MYSQLUSER'    => $this->environment->getUsername(),
             'MYSQLPASS'    => $this->environment->getPassword(),
             'MYSQLDB'      => $this->environment->getDatabase(),
+            'MYSQLHOST'     =>  $this->environment->getHost(),
             'DESTFILE'      => $destinationFile . '.gz'
         ));
 
