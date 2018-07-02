@@ -1,7 +1,9 @@
 <?php
 namespace Neusta\Facilior\Tests;
 
-abstract class BaseTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+abstract class BaseTest extends TestCase
 {
     /**
      * Disable logging to log file and turn off colors

@@ -100,7 +100,7 @@ class Database
     protected function tunneledDatabaseImport($sourceFile)
     {
         //Create Dump Name Sql
-        $dumpName = uniqid(time() . '_facilior_');
+        $dumpName = uniqid(time() . '_facilior_', true);
 
         //Zip the File
         $this->fileService->gzip($sourceFile, $sourceFile . '.gz');
@@ -120,7 +120,7 @@ class Database
         }
 
         $sshCommand = 'ssh -l ##SSHUSER## ##SSHHOST## "gunzip ##DUMPNAME##.gz ' .
-            '&& mysql -h ##MYSQLHOST## -u ##MYSQLUSER## -p##MYSQLPASS## ##MYSQLDB## < ##DUMPNAME## ' .
+            '&& mysql -h ##MYSQLHOST## -u ##MYSQLUSER## -p##MYSQLPASS## --port ##MYSQLPORT## ##MYSQLDB## < ##DUMPNAME## ' .
             '&& rm ##DUMPNAME##"';
         $sshResult = $this->shellService->execute($sshCommand, array(
             'SSHUSER'   =>  $this->environment->getSshUsername(),
@@ -142,12 +142,13 @@ class Database
      */
     protected function databaseImport($sourceFile)
     {
-        $command = 'mysql -h ##MYSQLHOST## -u ##MYSQLUSER## -p##MYSQLPASS## ##MYSQLDB## < ##SOURCEFILE##' .
+        $command = 'mysql -h ##MYSQLHOST## -u ##MYSQLUSER## -p##MYSQLPASS## --port ##MYSQLPORT## ##MYSQLDB## < ##SOURCEFILE##' .
             '&& rm ##SOURCEFILE##';
         $result = $this->shellService->execute($command, array(
             'MYSQLHOST' =>  $this->environment->getHost(),
             'MYSQLUSER' =>  $this->environment->getUsername(),
             'MYSQLPASS' =>  $this->environment->getPassword(),
+            'MYSQLPORT'   =>  $this->environment->getPort(),
             'MYSQLDB'   =>  $this->environment->getDatabase(),
             'SOURCEFILE'=>  $sourceFile
         ));
