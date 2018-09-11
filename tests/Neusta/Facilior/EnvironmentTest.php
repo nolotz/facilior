@@ -3,30 +3,18 @@ namespace Neusta\Facilior\Tests;
 
 use Neusta\Facilior\Environment;
 
-/**
- * Created by PhpStorm.
- * User: nlotzer
- * Date: 23.02.2016
- * Time: 10:51
- */
 
 class EnvironmentTest extends BaseTest
 {
 
-    /**
-     * @test
-     * @return void
-     */
     public function testCreateMethodWillThrowExceptionWhenNameIsEmpty()
     {
-        $this->setExpectedException('\Exception', 'EnvironmentName cant be empty.', 1456222301);
+        $this->expectException(\Exception::class);
+        $this->expectExceptionCode(1456222301);
+        $this->expectExceptionMessage('EnvironmentName cannot be empty.');
         Environment::create('');
     }
 
-    /**
-     * @test
-     * @return void
-     */
     public function testEnvironmentWillAssignVars()
     {
         $config = array(
@@ -35,6 +23,7 @@ class EnvironmentTest extends BaseTest
                 'password' => 'password',
                 'host' => 'host',
                 'database' => 'database',
+                'port' => 'port'
             ),
             'ssh_tunnel' => array(
                 'enabled' => true,
@@ -48,6 +37,7 @@ class EnvironmentTest extends BaseTest
         $this->assertSame('password', $env->getPassword());
         $this->assertSame('host', $env->getHost());
         $this->assertSame('database', $env->getDatabase());
+        $this->assertSame('port', $env->getPort());
 
         $this->assertSame('username', $env->getSshUsername());
         $this->assertSame('host', $env->getSshHost());

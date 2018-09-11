@@ -1,17 +1,7 @@
 <?php
 namespace Neusta\Facilior;
 
-/**
- * Created by PhpStorm.
- * User: nlotzer
- * Date: 05.02.2016
- * Time: 07:59
- */
-
-
-
 use Neusta\Facilior\Config\ConfigNotFoundException;
-use Symfony\Component\Config\Definition\Exception\Exception;
 
 class Environment
 {
@@ -30,6 +20,11 @@ class Environment
      * @var string
      */
     protected $host = '';
+
+    /**
+     * @var string
+     */
+    protected $port = '';
 
     /**
      * @var string
@@ -57,6 +52,7 @@ class Environment
         $this->username = $this->getDatabaseSetting($config, 'username');
         $this->password = $this->getDatabaseSetting($config, 'password');
         $this->host = $this->getDatabaseSetting($config, 'host');
+        $this->port = $this->getDatabaseSetting($config, 'port');
         $this->database = $this->getDatabaseSetting($config, 'database');
 
         $this->sshTunnel = $this->getSshSetting($config, 'enabled', false);
@@ -143,6 +139,21 @@ class Environment
     public function setHost($host)
     {
         $this->host = $host;
+    }
+    /**
+     * @return string
+     */
+    public function getPort()
+    {
+        return $this->port;
+    }
+
+    /**
+     * @param string $port
+     */
+    public function setPort($port)
+    {
+        $this->port = $port;
     }
 
     /**
@@ -235,7 +246,7 @@ class Environment
     public static function create($environmentName)
     {
         if (empty($environmentName)) {
-            throw new \Exception('EnvironmentName cant be empty.', 1456222301);
+            throw new \Exception('EnvironmentName cannot be empty.', 1456222301);
         }
 
         $fileHandle = file_put_contents(getcwd() . '/.facilior/environments/' .
@@ -259,6 +270,7 @@ class Environment
         . '  password: dummy' . PHP_EOL
         . '  host: 127.0.0.1' . PHP_EOL
         . '  database: dummy' . PHP_EOL
+        . '  port: 3306' . PHP_EOL
         . 'ssh_tunnel:' . PHP_EOL
         . '  enabled: false' . PHP_EOL
         . '  username: dummy' . PHP_EOL

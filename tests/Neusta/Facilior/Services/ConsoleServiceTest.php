@@ -46,7 +46,7 @@ class ConsoleServiceTest extends BaseTest
             ->build();
         $echoMock->enable();
 
-        $serviceMock = $this->getMock('\Neusta\Facilior\Services\ConsoleService', array('log'));
+        $serviceMock = $this->getMockBuilder(ConsoleService::class)->setMethods(['log'])->getMock();
         $serviceMock->expects($this->once())
             ->method('log');
 
