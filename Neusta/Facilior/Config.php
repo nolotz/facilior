@@ -1,18 +1,9 @@
 <?php
+
 namespace Neusta\Facilior;
 
-/**
- * Created by PhpStorm.
- * User: nlotzer
- * Date: 03.02.2016
- * Time: 08:06
- */
-
-
 use Neusta\Facilior\Config\ConfigNotFoundException;
-use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Yaml\Parser;
-use Symfony\Component\Yaml\Yaml;
 
 class Config
 {
@@ -33,6 +24,8 @@ class Config
 
     /**
      * Config constructor.
+     *
+     * @throws \Neusta\Facilior\Config\ConfigNotFoundException
      */
     public function __construct()
     {
@@ -42,6 +35,7 @@ class Config
 
     /**
      * Returns General Config
+     *
      * @param $key
      * @return mixed
      */
@@ -65,7 +59,7 @@ class Config
         if (empty($this->environments[$environment])) {
             $filePath = getcwd() . '/.facilior/environments/' . $environment . '.yml';
             if (!file_exists($filePath)) {
-                throw new ConfigNotFoundException('Connot find the environment ' . $environment);
+                throw new ConfigNotFoundException('Cannot find the environment ' . $environment);
             }
 
             $this->environments[$environment] = $this->parseConfigFile($filePath);
@@ -103,6 +97,56 @@ class Config
             throw new ConfigNotFoundException('Cannot find the file at path ' . $filePath);
         }
 
-        return $this->configParser->parse(file_get_contents($filePath));
+        $config = $this->configParser->parse(file_get_contents($filePath));
+        return $this->replaceEnvVars($config);
+    }
+
+    /**
+     * Replace env vars in yaml
+     *
+     * @param array $config
+     * @return array
+     */
+    private function replaceEnvVars(array $config): array
+    {
+        foreach ($config as $k => $v) {
+            if ($this->isEnvPlaceholder($v)) {
+                $config[$k] = $this->getValueFromEnv($v);
+            } elseif (\is_array($v)) {
+                $config[$k] = $this->replaceEnvVars($v);
+            }
+        }
+        return $config;
+    }
+
+    /**
+     * Checks if a value is a string and contains an env placeholder
+     * Taken from TYPO3 Core YamlFileLoader
+     *
+     * @param mixed $value the probe to check for
+     * @return bool
+     */
+    protected function isEnvPlaceholder($value): bool
+    {
+        return \is_string($value) && (strpos($value, '%env(') !== false);
+    }
+
+    /**
+     * Return value from environment variable
+     * Environment variables may only contain word characters and underscores (a-zA-Z0-9_)
+     * to be compatible to shell environments.
+     * Taken from TYPO3 Core YamlFileLoader
+     *
+     * @param string $value
+     * @return string
+     */
+    protected function getValueFromEnv(string $value): string
+    {
+        $matched = preg_match('/%env\([\'"]?(\w+)[\'"]?\)%/', $value, $matches);
+        if ($matched === 1) {
+            $envVar = getenv($matches[1]);
+            $value = $envVar ? str_replace($matches[0], $envVar, $value) : $value;
+        }
+        return $value;
     }
 }
