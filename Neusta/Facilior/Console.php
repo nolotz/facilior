@@ -9,6 +9,7 @@ namespace Neusta\Facilior;
  * Time: 08:17
  */
 
+use Dotenv\Dotenv;
 use Neusta\Facilior\Console\Kernel;
 use Neusta\Facilior\Services\ConsoleService;
 use Neusta\Facilior\Services\FileService;
@@ -50,7 +51,9 @@ class Console
 
     /**
      * Main function of Facilior
+     *
      * @return int
+     * @throws \Exception
      */
     public function execute()
     {
@@ -60,6 +63,9 @@ class Console
             $this->console->output('<fg=default;options=bold>Logging started:</> <fg=magenta>' .
             $this->console->getLogFile() . '</>', 0, 2);
         }
+
+        $dotenv = new Dotenv(getcwd());
+        $dotenv->load();
 
         $fileService = new FileService();
         $fileService->init();
