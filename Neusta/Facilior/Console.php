@@ -46,7 +46,7 @@ class Console
         $this->console = new ConsoleService();
 
         //Loads Commands into Application
-        $this->application->addCommands($this->kernel->commands());
+        $this->application->addCommands($this->kernel::commands());
     }
 
     /**
