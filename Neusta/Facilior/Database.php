@@ -51,12 +51,13 @@ class Database
 
     /**
      * @param $destinationFile
-     * @return string
+     * @return array
+     * @throws \Exception
      */
     protected function tunneledDatabaseExport($destinationFile)
     {
         $command = 'ssh -l ##SSHUSER## ##SSHHOST## "mysqldump --add-drop-table -u ##MYSQLUSER## ' .
-            '-p##MYSQLPASS## -h ##MYSQLHOST## ##MYSQLDB## | gzip -3 -c" > ##DESTFILE##';
+            '-p##MYSQLPASS## -h ##MYSQLHOST## --port ##MYSQLPORT## ##MYSQLDB## | gzip -3 -c" > ##DESTFILE##';
 
         $result = $this->shellService->execute($command, array(
             'SSHUSER'      => $this->environment->getSshUsername(),
@@ -65,6 +66,7 @@ class Database
             'MYSQLPASS'    => $this->environment->getPassword(),
             'MYSQLDB'      => $this->environment->getDatabase(),
             'MYSQLHOST'     =>  $this->environment->getHost(),
+            'MYSQLPORT'     =>  $this->environment->getPort(),
             'DESTFILE'      => $destinationFile . '.gz'
         ));
 
@@ -75,18 +77,20 @@ class Database
 
     /**
      * @param $destinationFile
-     * @return mixed
+     * @return array
+     * @throws \Exception
      */
     protected function databaseExport($destinationFile)
     {
         $command = 'mysqldump --add-drop-table -u ##MYSQLUSER## ' .
-            '--password=##MYSQLPASS## -h ##MYSQLHOST## ##MYSQLDB## > ##DESTFILE##';
+            '--password=##MYSQLPASS## -h ##MYSQLHOST## --port ##MYSQLPORT## ##MYSQLDB## > ##DESTFILE##';
 
         $result = $this->shellService->execute($command, array(
             'MYSQLUSER'    => $this->environment->getUsername(),
             'MYSQLPASS'    => $this->environment->getPassword(),
             'MYSQLDB'      => $this->environment->getDatabase(),
             'MYSQLHOST'     =>  $this->environment->getHost(),
+            'MYSQLPORT'     =>  $this->environment->getPort(),
             'DESTFILE'      => $destinationFile
         ));
 
@@ -95,7 +99,8 @@ class Database
 
     /**
      * @param $sourceFile
-     * @return string
+     * @return array
+     * @throws \Exception
      */
     protected function tunneledDatabaseImport($sourceFile)
     {
@@ -129,6 +134,7 @@ class Database
             'MYSQLHOST' =>  $this->environment->getHost(),
             'MYSQLUSER' =>  $this->environment->getUsername(),
             'MYSQLPASS' =>  $this->environment->getPassword(),
+            'MYSQLPORT' =>  $this->environment->getPort(),
             'MYSQLDB'   =>  $this->environment->getDatabase()
         ));
 
@@ -137,7 +143,7 @@ class Database
 
     /**
      * @param $sourceFile
-     * @return Shell\ShellResult
+     * @return array
      * @throws \Exception
      */
     protected function databaseImport($sourceFile)
@@ -158,6 +164,7 @@ class Database
 
     /**
      * @return ExportDatabaseResult
+     * @throws \Exception
      */
     public function exportSql()
     {
