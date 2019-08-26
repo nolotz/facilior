@@ -25,12 +25,12 @@ class Database
     /**
      * @var Environment|null
      */
-    protected $environment = null;
+    protected $environment;
 
     /**
      * @var ConsoleService|null
      */
-    protected $consoleOutput = null;
+    protected $consoleOutput;
 
     /**
      * @var ShellService
@@ -57,7 +57,9 @@ class Database
     protected function tunneledDatabaseExport($destinationFile)
     {
         $command = 'ssh -l ##SSHUSER## ##SSHHOST## "mysqldump --add-drop-table -u ##MYSQLUSER## ' .
-            '-p##MYSQLPASS## -h ##MYSQLHOST## --port ##MYSQLPORT## ##MYSQLDB## | gzip -3 -c" > ##DESTFILE##';
+            $this->getSingleTransactionParam() .
+            ' -p##MYSQLPASS## -h ##MYSQLHOST## --port ##MYSQLPORT## ##MYSQLDB## | ' .
+            'gzip -3 -c" > ##DESTFILE##';
 
         $result = $this->shellService->execute($command, array(
             'SSHUSER'      => $this->environment->getSshUsername(),
@@ -83,7 +85,8 @@ class Database
     protected function databaseExport($destinationFile)
     {
         $command = 'mysqldump --add-drop-table -u ##MYSQLUSER## ' .
-            '--password=##MYSQLPASS## -h ##MYSQLHOST## --port ##MYSQLPORT## ##MYSQLDB## > ##DESTFILE##';
+            $this->getSingleTransactionParam() .
+            ' --password=##MYSQLPASS## -h ##MYSQLHOST## --port ##MYSQLPORT## ##MYSQLDB## > ##DESTFILE##';
 
         $result = $this->shellService->execute($command, array(
             'MYSQLUSER'    => $this->environment->getUsername(),
@@ -114,10 +117,10 @@ class Database
 
         $scpCommand = 'scp ##SOURCEFILE## ##SSHUSER##@##SSHHOST##:~/##DUMPNAME##';
         $scpResult = $this->shellService->execute($scpCommand, array(
-            'SOURCEFILE'    => './.facilior/temp/' . $baseSourceFile,
-            'SSHUSER'  => $this->environment->getSshUsername(),
-            'SSHHOST'      => $this->environment->getSshHost(),
-            'DUMPNAME'      => $dumpName . '.gz'
+            'SOURCEFILE' => './.facilior/temp/' . $baseSourceFile,
+            'SSHUSER'    => $this->environment->getSshUsername(),
+            'SSHHOST'    => $this->environment->getSshHost(),
+            'DUMPNAME'   => $dumpName . '.gz'
         ));
 
         if ($scpResult->getExitCode() != 0) {
@@ -224,5 +227,20 @@ class Database
         }
 
         return $isFailed;
+    }
+
+    /**
+     * Generate parameters to use single transaction for InnoDB tables
+     * and disable MyISAM table lock
+     *
+     * @return string
+     */
+    protected function getSingleTransactionParam(): string
+    {
+        if($this->environment->isSingleTransaction() === false) {
+            return '';
+        }
+
+        return '--lock-tables=false --single-transaction';
     }
 }

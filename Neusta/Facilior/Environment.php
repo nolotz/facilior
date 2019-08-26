@@ -34,6 +34,11 @@ class Environment
     /**
      * @var bool
      */
+    protected $singleTransaction = false;
+
+    /**
+     * @var bool
+     */
     protected $sshTunnel = false;
 
     /**
@@ -54,11 +59,11 @@ class Environment
         $this->host = $this->getDatabaseSetting($config, 'host');
         $this->port = $this->getDatabaseSetting($config, 'port');
         $this->database = $this->getDatabaseSetting($config, 'database');
+        $this->singleTransaction = (bool)$this->getDatabaseSetting($config, 'single_transaction', false);
 
         $this->sshTunnel = $this->getSshSetting($config, 'enabled', false);
         $this->sshHost = $this->getSshSetting($config, 'host', '');
         $this->sshUsername = $this->getSshSetting($config, 'username', '');
-
     }
 
     /**
@@ -218,6 +223,22 @@ class Environment
     public function setSshHost($sshHost)
     {
         $this->sshHost = $sshHost;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSingleTransaction(): bool
+    {
+        return $this->singleTransaction;
+    }
+
+    /**
+     * @param bool $singleTransaction
+     */
+    public function setSingleTransaction(bool $singleTransaction): void
+    {
+        $this->singleTransaction = $singleTransaction;
     }
 
     /**

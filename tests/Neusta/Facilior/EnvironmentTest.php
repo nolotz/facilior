@@ -7,15 +7,16 @@ use Neusta\Facilior\Environment;
 class EnvironmentTest extends BaseTest
 {
 
-    public function testCreateMethodWillThrowExceptionWhenNameIsEmpty()
+    public function testCreateMethodWillThrowExceptionWhenNameIsEmpty(): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionCode(1456222301);
         $this->expectExceptionMessage('EnvironmentName cannot be empty.');
+
         Environment::create('');
     }
 
-    public function testEnvironmentWillAssignVars()
+    public function testEnvironmentWillAssignVars(): void
     {
         $config = array(
             'database' => array(
@@ -23,7 +24,8 @@ class EnvironmentTest extends BaseTest
                 'password' => 'password',
                 'host' => 'host',
                 'database' => 'database',
-                'port' => 'port'
+                'port' => 'port',
+                'single_transaction' => true
             ),
             'ssh_tunnel' => array(
                 'enabled' => true,
@@ -42,7 +44,6 @@ class EnvironmentTest extends BaseTest
         $this->assertSame('username', $env->getSshUsername());
         $this->assertSame('host', $env->getSshHost());
         $this->assertTrue($env->isSshTunnel());
+        $this->assertTrue($env->isSingleTransaction());
     }
-
-
 }
